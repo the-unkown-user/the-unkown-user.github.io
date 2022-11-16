@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>创新创业交流服务平台</title>
+    <link rel="stylesheet" href="../../iaeep/plugins/element-ui/index.css"/>
+    <link rel="stylesheet" href="../../iaeep/styles/css/index.css"/>
+    <link rel="stylesheet" href="../../iaeep/styles/css/vant.min.css"/>
+</head>
+
+
+<body>
+<div id="app" class="container">
+    <!--用户中心-->
+    <el-drawer
+            class="userCenter"
+            title="用户中心"
+            :visible.sync="drawer"
+            :direction="direction"
+            style="text-align: center;">
+        <!--个人用户中心-->
+        <el-form :model="personalInfo" v-if="userType==='个人'" size="small" label-position="left">
+            <el-form-item label=" 头像" label-with="80px" style="margin-left: 20px;">
+                <el-upload
+                        class="avatar-uploader"
+                        action="http://localhost:8080/user/modifyAvatar"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                    <el-avatar v-if="personalInfo.avatar" class="avatar" :size="80" :src="personalInfo.avatar"></el-avatar>
+                    <el-avatar v-else class="el-icon-plus avatar-uploader-icon"></el-avatar>
+                </el-upload>
+            </el-form-item>
+            <el-form-item label=" 用户名" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="personalInfo.name" v-model="personalInfo.name"></el-input>
+            </el-form-item>
+            <el-form-item label=" 账号" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="personalInfo.account" v-model="personalInfo.account"></el-input>
+            </el-form-item>
+            <el-form-item label=" 手机号" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="personalInfo.phone" v-model="personalInfo.phone"></el-input>
+            </el-form-item>
+            <el-form-item label=" 邮箱" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="personalInfo.email" v-model="personalInfo.email"></el-input>
+            </el-form-item>
+            <el-form-item label=" 年龄" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="personalInfo.age" v-model="personalInfo.age"></el-input>
+            </el-form-item>
+            <el-form-item label=" 性别" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="personalInfo.sex" v-model="personalInfo.sex"></el-input>
+            </el-form-item>
+            <el-form-item label=" 毕业院校" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="personalInfo.graduateSchool" v-model="personalInfo.graduateSchool"></el-input>
+            </el-form-item>
+            <el-form-item></el-form-item>
+            <el-form-item size="medium">
+                <!--私信，关注，收藏，共创中心-->
+                <el-button @click="go_private_letter">私信</el-button>
+                <el-button @click="go_follow">关注</el-button>
+                <el-button @click="go_collection">收藏</el-button>
+                <el-button @click="go_co_creation_center">共创中心</el-button>
+            </el-form-item>
+            <el-form-item></el-form-item>
+            <el-form-item>
+                <el-button style="position: center" size="medium" @click="saveUserInfo(1)">保存个人信息</el-button>
+            </el-form-item>
+        </el-form>
+
+        <!--企业用户中心-->
+        <el-form v-if="userType==='企业' " size="small" label-position="left">
+            <el-form-item label=" 头像" label-with="80px" style="margin-left: 20px;">
+                <el-upload
+                        class="avatar-uploader"
+                        action="/upload"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                    <el-avatar v-if="enterpriseInfo.avatar" class="avatar" :size="80" :src="enterpriseInfo.avatar"></el-avatar>
+                    <el-avatar v-else class="el-icon-plus avatar-uploader-icon"></el-avatar>
+                </el-upload>
+            </el-form-item>
+            <el-form-item label=" 企业名" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="enterpriseInfo.name" v-model="enterpriseInfo.name"></el-input>
+            </el-form-item>
+            <el-form-item label=" 账号" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="enterpriseInfo.account" v-model="enterpriseInfo.account"></el-input>
+            </el-form-item>
+            <el-form-item label=" 地址" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="enterpriseInfo.address" v-model="enterpriseInfo.address"></el-input>
+            </el-form-item>
+            <el-form-item label=" 邮箱" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="enterpriseInfo.email" v-model="enterpriseInfo.email"></el-input>
+            </el-form-item>
+            <el-form-item label=" 电话" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="enterpriseInfo.phone" v-model="enterpriseInfo.phone"></el-input>
+            </el-form-item>
+            <el-form-item label=" 企业介绍" label-width="80px" style="width: 400px;margin-left: 20px;">
+                <el-input :placeholder="enterpriseInfo.introduction"
+                          type="textarea" :rows="4" v-model="enterpriseInfo.introduction"></el-input>
+            </el-form-item>
+            <el-form-item></el-form-item>
+            <el-form-item size="medium">
+                <!--私信，关注，收藏，共创中心-->
+                <el-button @click="go_private_letter">私信</el-button>
+                <el-button @click="go_follow">关注</el-button>
+                <el-button @click="go_collection">收藏</el-button>
+                <el-button @click="go_co_creation_center">共创中心</el-button>
+            </el-form-item>
+            <el-form-item></el-form-item>
+            <el-form-item>
+                <el-button style="position: center" size="medium" @click="saveUserInfo(2)">保存企业信息</el-button>
+            </el-form-item>
+        </el-form>
+
+        <!--私信-->
+        <el-drawer
+                title="私信"
+                :append-to-body="true"
+                :visible.sync="private_letter_page"
+                size="20%"
+                style="text-align: center">
+            <el-collapse accordion>
+
+                <el-collapse-item title="全部联系人" name="1" style="margin-left: 20px;">
+                    <el-table
+                            :data="contactsList.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+                            height="300"
+                            :row-key="getRowKeys"
+                            style="width: 100%;margin-top: 10px;margin-left: 10px;">
+                        <el-table-column width="100" align="left" :show-overflow-tooltip="true">
+                            <template slot="header" slot-scope="scope">
+                                <el-input
+                                        v-model="search"
+                                        size="mini"
+                                        placeholder="输入搜索">
+                                </el-input>
+                            </template>
+                            <template slot-scope="scope">
+                                <span style="cursor:pointer;">
+                                    {{scope.row.name}}
+                                </span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="80px" align="center">
+                            <template slot-scope="scope">
+                                <el-badge :value="12" class="item"
+                                          :hidden="scope.row.unRead ? unHidden : hidden" :is-dot="is_dot">
+                                    <el-button size="small" @click="go_send_chat_message(scope.row)">私信</el-button>
+                                </el-badge>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="80px" align="center">
+                            <template slot-scope="scope">
+                                <el-button type="danger" size="small" @click="delete_contacts(scope.row.id)">删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-collapse-item>
+                <el-collapse-item title="添加联系人" name="2" style="margin-left: 20px;">
+                    <el-input placeholder="查询联系人" v-model="contactsName" class="input-with-select" >
+                        <el-button slot="append" icon="el-icon-search" @click="findContacts"></el-button>
+                    </el-input>
+                    <el-table
+                            :data="contactsFindList"
+                            height="300"
+                            :row-key="getRowKeys"
+                            style="width: 100%;margin-top: 10px;margin-left: 10px;">
+                        <el-table-column width="100" align="left" :show-overflow-tooltip="true">
+                            <template slot-scope="scope">
+                                <span style="cursor:pointer;">
+                                    {{scope.row.name}}
+                                </span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="150px" align="center">
+                            <template slot-scope="scope">
+                                <el-button size="small" @click="addContacts(scope.row)">添加到联系人</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-collapse-item>
+            </el-collapse>
+
+        </el-drawer>
+
+        <!--关注-->
+        <el-drawer
+                title="我的关注"
+                :append-to-body="true"
+                :visible.sync="follow_page"
+                size="30%"
+                style="text-align: center">
+            <div style="text-align: left ;width: 100%;height: 20px;">
+                <span style="position: absolute; margin-left: 10px; margin-top: 10px;">关注类型：</span>
+                <el-select v-model="followType" style="position: absolute; width: 120px; margin-left: 100px;">
+                    <el-option value="我的关注">我的关注</el-option>
+                    <el-option value="关注我的">关注我的</el-option>
+                </el-select>
+            </div>
+            <el-table
+                    :data="followList.filter(data => !search || data.name2.toLowerCase().includes(search.toLowerCase()))"
+                    height="500"
+                    :row-key="getRowKeys"
+                    style="width: 100%;margin-top: 50px;margin-left: 30px;">
+                <el-table-column
+                        type="selection"
+                        :reserve-selection="true"
+                        width="50">
+                </el-table-column>
+                <el-table-column
+                        label="头像"
+                        width="50">
+                    <template slot-scope="scope">
+                        <el-avatar class="avatar" :size="30" :src="scope.row.avatar"></el-avatar>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="name2"
+                        align="left"
+                        label="用户名"
+                        width="80">
+                </el-table-column>
+                <el-table-column width="200" align="center">
+                    <template slot="header" slot-scope="scope">
+                        <el-input
+                                v-model="search"
+                                size="mini"
+                                placeholder="输入关键字搜索">
+                        </el-input>
+                    </template>
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                type="danger"
+                                @click="cancelFollow(scope.$index, scope.row)">取消关注
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+        </el-drawer>
+
+        <!--聊天框-->
+        <el-drawer
+                class="chat"
+                :title="chat.toUserName"
+                :visible.sync="chatVisible"
+                :append-to-body="true"
+                width="30%"
+                text-align="center">
+            <div class="chatMain"  v-if="chatList != null">
+                <!--消息展示框-->
+                <div v-for="item in chatList.filter(data => (data.fromUserId == chat.fromUserId &&
+                data.toUserId == chat.toUserId) ||
+                (data.fromUserId == chat.toUserId &&
+                data.toUserId == chat.fromUserId))">
+                    <!-- 对方 -->
+                    <div class="word" v-if="item.fromUserId == chat.toUserId">
+                        <el-avatar shape="square" :size="30" :src="chatAvatar"></el-avatar>
+                        <div class="info">
+                            <!-- <p class="time">
+                              {{ itemc.nickName }}
+                            </p> -->
+                            <div class="info-content">{{ item.content }}</div>
+                            <div class="message_time">
+                                {{ item.time }}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 我的 -->
+                    <div class="word-my" v-else>
+                        <div class="info">
+                            <div class="info-content">{{ item.content }}</div>
+                            <div class="Sender_time">
+                                {{ item.time }}
+                            </div>
+                        </div>
+                        <el-avatar shape="square" :size="30" :src="chatAvatar"></el-avatar>
+                    </div>
+                </div>
+            </div>
+            <div class="chatTextArea">
+                <!--输入文本框-->
+                <el-input
+                        type="textarea"
+                        placeholder="请输入内容,键盘键入ctrl+enter(回车)发送消息"
+                        v-model="chatMessage.content"
+                        maxlength="30"
+                        show-word-limit
+                        clearable
+                        @keyup.ctrl.enter.native="sendMessage"
+                >
+                </el-input>
+            </div>
+        </el-drawer>
+
+        <!--收藏-->
+        <el-drawer
+                title="我的收藏"
+                :append-to-body="true"
+                :visible.sync="collection_page"
+                size="30%"
+                style="text-align: center">
+            <el-table
+                    :data="postCollectionList.filter(data => !search || data.postTitle.toLowerCase().includes(search.toLowerCase())
+                    || data.time.toLowerCase().includes(search.toLowerCase()))"
+                    height="500"
+                    :row-key="getRowKeys"
+                    @cell-dblclick="viewPostDetails"
+                    style="width: 100%;margin-top: 50px;margin-left: 30px;">
+                <el-table-column
+                        type="selection"
+                        :reserve-selection="true"
+                        width="50">
+                </el-table-column>
+                <el-table-column
+                        prop="postTitle"
+                        align="left"
+                        label="贴子标题"
+                        :show-overflow-tooltip="true"
+                        width="80">
+                </el-table-column>
+                <el-table-column
+                        prop="date"
+                        align="center"
+                        label="收藏时间"
+                        sortable
+                        column-key="date"
+                        :filter-method="filterDateTime"
+                        width="120">
+                </el-table-column>
+                <el-table-column width="200" align="center">
+                    <template slot="header" slot-scope="scope">
+                        <el-input
+                                v-model="search"
+                                size="mini"
+                                placeholder="输入关键字搜索">
+                        </el-input>
+                    </template>
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                type="danger"
+                                @click="cancelCollection(scope.$index, scope.row)">取消收藏
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+        </el-drawer>
+
+        <!--共创中心-->
+        <el-drawer
+                title="共创管理中心"
+                :append-to-body="true"
+                :visible.sync="co_creation_center_page"
+                size="30%"
+                style="text-align: center">
+            <el-collapse accordion>
+                <el-collapse-item title="我的项目" name="1" style="margin-left: 20px;">
+                    <el-table
+                            :data="projectInfoList.filter(data => !search || data.projectName.toLowerCase().includes(search.toLowerCase()))"
+                            height="300"
+                            :row-key="getRowKeys"
+                            style="width: 100%;margin-top: 10px;margin-left: 10px;">
+                        <el-table-column width="300" align="left" :show-overflow-tooltip="true">
+                            <template slot="header" slot-scope="scope">
+                                <el-input
+                                        v-model="search"
+                                        size="mini"
+                                        placeholder="输入搜索">
+                                </el-input>
+                            </template>
+                            <template slot-scope="scope">
+                                <span style="cursor:pointer;">
+                                    {{scope.row.projectName}}
+                                </span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120px" align="center">
+                            <template slot-scope="scope">
+                                <el-button size="small" @click="go_project_management(scope.row)">项目管理</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-collapse-item>
+                <el-collapse-item title="新建项目" name="2" style="margin-left: 20px;">
+                    <el-form size="mini" ref="projectInfo" :model="projectInfo" label-width="150px" label-position="left" style="margin-left: 15px;width: 400px;">
+                        <el-form-item label="项目名称:">
+                            <el-input v-model="projectInfo.projectName" ></el-input>
+                        </el-form-item>
+                        <el-form-item label="项目负责人:">
+                            <el-input v-model="projectInfo.chargeUsername" ></el-input>
+                        </el-form-item>
+                        <el-form-item label="项目负责人电话:">
+                            <el-input v-model="projectInfo.phone" ></el-input>
+                        </el-form-item>
+                        <el-form-item label="项目负责人邮箱:">
+                            <el-input v-model="projectInfo.email"></el-input>
+                        </el-form-item>
+                        <el-form-item label="项目团队人数:">
+                            <el-input v-model="projectInfo.projectPersonNum"></el-input>
+                        </el-form-item>
+                        <el-form-item label="项目状态:">
+                            <el-select v-model="projectInfo.projectStatus" style="width: 250px;">
+                                <el-option value="进行中">进行中</el-option>
+                                <el-option value="'已结项">已结项</el-option>
+                                <el-option value="项目终止">项目终止</el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="项目标签:">
+                            <el-select v-model="projectInfo.projectLabel" style="width: 250px;">
+                                <el-option value="农林牧渔业">农林牧渔业</el-option>
+                                <el-option value="建筑">建筑</el-option>
+                                <el-option value="信息技术">信息技术</el-option>
+                                <el-option value="金融">金融</el-option>
+                                <el-option value="交通、仓储、物流">交通、仓储、物流</el-option>
+                                <el-option value="房地产">房地产</el-option>
+                                <el-option value="采矿业">采矿业</el-option>
+                                <el-option value="水电、热力、燃气">水电、热力、燃气</el-option>
+                                <el-option value="水利、环境、公共设施">水利、环境、公共设施</el-option>
+                                <el-option value="居民服务、其他服务业">居民服务、其他服务业</el-option>
+                                <el-option value="科学技术">科学技术</el-option>
+                                <el-option value="租赁、商务服务">租赁、商务服务</el-option>
+                                <el-option value="制造业">制造业</el-option>
+                                <el-option value="批发、零售">批发、零售</el-option>
+                                <el-option value="住宿、餐饮">住宿、餐饮</el-option>
+                                <el-option value="教育">教育</el-option>
+                                <el-option value="文化、体育、娱乐">文化、体育、娱乐</el-option>
+                                <el-option value="医疗和社会工作">医疗和社会工作</el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="项目简介:">
+                            <el-input type="textarea" v-model="projectInfo.projectIntroduce"></el-input>
+                        </el-form-item>
+                        <el-form-item></el-form-item>
+                        <el-form-item label-width="0px">
+                            <el-button style="margin-left: 0px; width: 110px;"  @click="addProjectInfo">保存</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-collapse-item>
+            </el-collapse>
+        </el-drawer>
+
+        <!--项目管理-->
+        <el-drawer
+                title="项目管理"
+                :append-to-body="true"
+                :visible.sync="projectManager"
+                size="30%"
+                style="text-align: center">
+            <el-form ref="projectInfo" :model="projectInfo" label-width="150px" label-position="left" style="margin-left: 30px;width: 400px;">
+                <el-form-item label="项目名称:">
+                    <el-input v-model="projectInfo.projectName" ></el-input>
+                </el-form-item>
+                <el-form-item label="项目负责人:">
+                    <el-input v-model="projectInfo.chargeUsername" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="项目负责人电话:">
+                    <el-input v-model="projectInfo.phone" ></el-input>
+                </el-form-item>
+                <el-form-item label="项目负责人邮箱:">
+                    <el-input v-model="projectInfo.email"></el-input>
+                </el-form-item>
+                <el-form-item label="项目团队人数:">
+                    <el-input v-model="projectInfo.projectPersonNum"></el-input>
+                </el-form-item>
+                <el-form-item label="项目状态:">
+                    <el-select v-model="projectInfo.projectStatus" style="width: 300px;">
+                        <el-option value="进行中">进行中</el-option>
+                        <el-option value="'已结项">已结项</el-option>
+                        <el-option value="项目终止">项目终止</el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="项目标签:">
+                    <el-button style="width: 250px;">{{projectInfo.projectLabel}}</el-button>
+                </el-form-item>
+                <el-form-item label="项目简介:">
+                    <el-input type="textarea" v-model="projectInfo.projectIntroduce"></el-input>
+                </el-form-item>
+                <el-form-item></el-form-item>
+                <el-form-item label-width="0px">
+                    <el-button style="margin-left: 0px; width: 110px;"  @click="updateProjectInfo">保存修改</el-button>
+                </el-form-item>
+            </el-form>
+        </el-drawer>
+
+    </el-drawer>
+
+
+    <!--登录界面-->
+    <el-dialog
+            title="登录"
+            :visible.sync="centerDialogVisible"
+            width="30%"
+            center>
+        <el-input
+                placeholder="请输入手机号"
+                v-model="username"
+                clearable>
+        </el-input>
+        <p></p>
+        <el-input placeholder="请输入密码" v-model="password" show-password></el-input>
+        <p @click="forgotPassword" style="position: absolute;cursor:pointer">忘记密码？</p>
+        <p @click="go_register" style="position: absolute; margin-left: 300px;cursor:pointer">没有账号？立即注册</p>
+        <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="login">登&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp录</el-button>
+            </span>
+    </el-dialog>
+    <!--重置密码界面-->
+    <el-dialog
+            title="重置密码"
+            :visible.sync="centerDialogVisible2"
+            width="30%"
+            center>
+        <el-input v-model="registerInfo.phone" clearable placeholder="请输入手机号" style="width: 250px;"></el-input>
+        <el-button @click="sendCode" :disabled="disable" style="float: right">发送验证码</el-button>
+        <p></p>
+        <el-input  v-model="code" placeholder="请输入验证码">请输入验证码</el-input>
+        <p></p>
+        <el-input show-password v-model="newPassword" placeholder="请输入新密码" clearable></el-input>
+        <p></p>
+        <el-input show-password v-model="newPassword2" placeholder="请再次输入新密码" clearable></el-input>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="resetPassword">确&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp认</el-button>
+        </span>
+    </el-dialog>
+    <!--注册账号界面-->
+    <el-dialog
+            title="注册"
+            :visible.sync="centerDialogVisible1"
+            width="30%"
+            center>
+        <el-form ref="form" :model="registerInfo" label-position="left" label-width="80px">
+            <el-form-item label="手机号">
+                <el-input v-model="registerInfo.phone" placeholder="请输入手机号" style="width: 180px;"></el-input>
+                <el-button @click="sendCode($event)" :disabled="disable" style="float: right">获取验证码</el-button>
+            </el-form-item>
+            <el-form-item label="密码">
+                <el-input v-model="registerInfo.password" placeholder="请输入密码" show-password></el-input>
+            </el-form-item>
+
+            <el-form-item label="验证码">
+                <el-input v-model="registerInfo.code" placeholder="请输入验证码">
+
+                </el-input>
+            </el-form-item>
+            <el-form-item label="用户类型">
+                <el-select v-model="registerInfo.userType" placeholder="请选择用户类型" style="width: 330px;">
+                    <el-option label="个人" value="个人"></el-option>
+                    <el-option label="企业" value="企业"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="_register">立即注册</el-button>
+            </span>
+    </el-dialog>
+    <!--页面头部-->
+    <div class="header">
+        <img class="img" src="../../iaeep/image/IAEEP_LOGO.png" alt="logo">
+        <h1 class="title" >创新创业交流服务平台</h1>
+        <el-menu class="menu" mode="horizontal" style="width: 235px;"
+                 @select="handleSelect" text-color="#000" active-text-color="red">
+            <el-menu-item index="1">首页</el-menu-item>
+            <el-menu-item index="2">论坛</el-menu-item>
+            <el-menu-item index="3">共创平台</el-menu-item>
+        </el-menu>
+        <el-input class="input" placeholder="请输入搜索内容" v-model="input" style="width: 400px;margin-left:750px;">
+            <el-select v-model="select_" slot="prepend" style="width: 100px;">
+                <el-option label="项目" value="项目"></el-option>
+                <el-option label="贴子" value="贴子"></el-option>
+                <el-option @click.native="refresh_" label="请选择" value="请选择"></el-option>
+            </el-select>
+            <el-button slot="append" icon="el-icon-search" @click="search_"></el-button>
+        </el-input>
+        <div v-if="isLogin" style="position: absolute; width:20px; margin-left: 1180px; margin-top: 6px; ">
+            <el-badge :value="num" class="item" :hidden="unReadeInfo ? unHidden : hidden" :is-dot="is_dot"
+                      style="margin-top: 20px;">
+                <i @click="go_private_letter" class="el-icon-message-solid"></i>
+            </el-badge>
+        </div>
+
+        <div v-if="isLogin" class="user" @click="personalCenter" style="margin-top: 10px;">
+            <span><el-avatar v-if="userType == '个人'" class="avatar" :size="50" :src="personalInfo.avatar"></el-avatar>
+                  <el-avatar v-if="userType == '企业'" class="avatar" :size="50" :src="enterpriseInfo.avatar"></el-avatar></span>
+
+            <span style="float: right; position: absolute;  margin-left: 50px; ">{{userType == '个人' ? personalInfo.name : enterpriseInfo.name}}</span>
+            <span style="margin-left: 43px;margin-bottom: 10px;">个人中心</span>
+        </div>
+        <span v-if="isLogin" style="position:absolute; margin-left: 1450px; margin-top: 20px; float: right;"
+              @click="loginOut">退出登录</span>
+        <div v-else="isLogin" style="position: absolute; margin-left: 1400px; margin-top: 25px;">
+            <span @click="go_login" style="cursor:pointer">登录&nbsp&nbsp|&nbsp&nbsp</span>
+            <span @click="go_register" style="cursor:pointer">注册</span>
+        </div>
+
+    </div>
+    <!--页面主体-->
+    <div class="main">
+        <iframe
+                :src="iframeUrl"
+                width="100%"
+                height="100%"
+                frameborder="0"
+                id="iframe"
+        ></iframe>
+    </div>
+    <!--登录底部-->
+    <div class="footer">
+        <span style="position: absolute; margin-top: 8px"><h3>一个致力于创新创业交流的网站打造千万创业梦想</h3></span>
+        <div style="position: absolute; margin-left: 800px; margin-top: 25px;">
+            <span>日期 : {{dataTime}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span>友情链接</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span>关于我们</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span>联系我们</span>
+        </div>
+
+    </div>
+</div>
+</body>
+
+
+<script src="../../iaeep/plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../iaeep/plugins/element-ui/index.js"></script>
+<script src="../../iaeep/js/vant.min.js"></script>
+<!-- 引入axios -->
+<script src="../../iaeep/plugins/axios/axios.min.js"></script>
+<script src="../../iaeep/js/request.js"></script>
+<script src="../../iaeep/js/validate.js"></script>
+<script src="../../iaeep/js/index.js"></script>
+<script src="../../iaeep/api/index.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {//数据节点
+            return {
+                centerDialogVisible: false,
+                isLogin: false,
+                select_:"请选择",
+                contactsName:"",
+                input: "",
+                userId: localStorage.getItem('userId'),
+                userType: "",
+                name: "",
+                iframeUrl: 'homePage.html',
+                avatar: "../image/logo-IAEEP1.png",
+                chatAvatar: "../image/logo-IAEEP1.png",
+                dataTime: "",
+                chatVisible: false,
+                username: "",
+                password: "",
+                centerDialogVisible1: false,
+                centerDialogVisible2: false,
+                registerInfo: {
+                    password: "",
+                    phone: "",
+                    userType: "",
+                    code: "",
+                },
+                direction: "rtl",
+                drawer: false,
+                code: "",
+                newPassword: "",
+                newPassword2: "",
+                userPhoneNumber: "",
+                unReadeInfo:false,
+                personalInfo:null,
+                enterpriseInfo: {
+                    //avatar:"../image/logo-IAEEP1.png",
+                },
+                is_dot: true,
+                hidden: true,
+                num: 1,
+                unHidden: false,
+                follow_page: false,
+                private_letter_page: false,
+                collection_page: false,
+                co_creation_center_page: false,
+                followList: [
+                    // {id: 1, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "3"},
+                    // {id: 2, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "4"},
+                    // {id: 3, avatar: "../image/avatar/6.jpg",           name1: "1", name2: "5"},
+                    // {id: 4, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "2"},
+                    // {id: 5, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "6"},
+                    // {id: 6, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "7"},
+                    // {id: 7, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "8"},
+                    // {id: 8, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "8"},
+                    // {id: 9, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "3"},
+                    // {id: 10, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "4"},
+                    // {id: 11, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "5"},
+                    // {id: 12, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "2"},
+                    // {id: 13, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "6"},
+                    // {id: 14, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "33"},
+                    // {id: 15, avatar: "../image/avatar/logo-IAEEP1.jpg", name1: "1", name2: "13"},
+                ],
+                followType: "我的关注",
+                search: '',
+                postCollectionList: [
+                    // {
+                    //     id: "1",
+                    //     postTitle: "sdv圣诞狂欢覅都改了设计费ID个后视镜GIS和宫颈癌结构化寒假工昂和施工昂了呢好世界观为哦VB你没看了和公安阿市公安局各啦啦啦提昂家环境",
+                    //     time: "2015-07-07"
+                    // },
+                    // {id: "2", postTitle: "sgefdg了双方各", time: "2016-07-07"},
+                    // {id: "3", postTitle: "独守空闺界面", time: "2016-07-07"},
+                    // {id: "4", postTitle: "洗的", time: "2015-07-07"},
+                    // {id: "5", postTitle: "索拉卡难过而", time: "2016-07-07"},
+                    // {id: "6", postTitle: "社发大水", time: "2015-07-07"},
+                    // {id: "7", postTitle: "格化工厂VR个", time: "2018-07-07"},
+                    // {id: "8", postTitle: "像个人各个", time: "2015-07-07"},
+                    // {id: "9", postTitle: "的后个人所得", time: "2018-07-07"},
+                    // {id: "10", postTitle: "和个人第三个", time: "2015-07-07"},
+                    // {id: "11", postTitle: "使得和个人股", time: "2015-07-07"},
+                    // {id: "12", postTitle: "胆识过人", time: "2015-07-07"},
+                    // {id: "13", postTitle: " 会如何给", time: "2018-07-07"},
+                    // {id: "14", postTitle: "和润滑油", time: "2015-08-07"},
+                    // {id: "15", postTitle: "很多人很容易", time: "2015-07-07"},
+                    // {id: "16", postTitle: "胶体溶液", time: "2015-07-07"},
+                    // {id: "17", postTitle: "我的心声登革热", time: "2015-07-07"},
+                    // {id: "18", postTitle: "大好人和", time: "2015-07-07"},
+                    // {id: "19", postTitle: "加热管三个数", time: "2015-07-07"},
+                    // {id: "20", postTitle: "人员让他的风格", time: "2015-07-07"},
+                    // {id: "21", postTitle: "已汇入提供的", time: "2015-07-07"},
+                    // {id: "22", postTitle: "当然有好人", time: "2015-07-07"},
+                    // {id: "23", postTitle: "任何人都", time: "2015-07-07"},
+                    // {id: "24", postTitle: "当然同一伙人", time: "2015-07-07"},
+                    // {id: "25", postTitle: "的还得给", time: "2015-07-07"},
+                    // {id: "26", postTitle: "德国人高", time: "2015-07-07"},
+                ],
+                contactsList: [
+                    // {id: 1,toUserId:123456, name: "张世饿死"},
+                    // {id: 2,toUserId:123456, name: "的hi二十六号吧"},
+                    // {id: 3,toUserId:123456, name: "上课激动剂"},
+                    // {id: 4,toUserId:123456, name: "参加双离合IE"},
+                    // {id: 5, toUserId:123456,name: "该卡是奇偶IE"},
+                    // {id: 6,toUserId:123456, name: "数据茶农米"},
+                    // {id: 7,toUserId:123456, name: "各级搜"},
+                    // {id: 8,toUserId:123456, name: "工商联较小"},
+                    // {id: 9, toUserId:123456,name: "下么快点解封IE哦"},
+                    // {id: 10,toUserId:123456, name: "更深刻奇偶以就"},
+                    // {id: 11,toUserId:123456, name: "跟谁欧司朗加分"},
+                    // {id: 12,toUserId:123456, name: "果实觉醒噢IE吗"},
+                    // {id: 13,toUserId:123456, name: "不设计费Joe"},
+                    // {id: 14, toUserId:123456,name: "县级非零售价哦赔付"},
+                    // {id: 15,toUserId:123456, name: "更辛苦姐"},
+                    // {id: 16,toUserId:123456, name: "背景色库连接佛歌"},
+                    // {id: 17,toUserId:123456, name: "想看到立刻付金额"},
+                    // {id: 18,toUserId:123456, name: "不扣税撇"},
+                    // {id: 19,toUserId:123456, name: "新建噢诶我"},
+                    // {id: 20, toUserId:123456,name: "熄灭我觉得模拟付款"},
+                    // {id: 21,toUserId:123456, name: "向大家覅偶尔"},
+                ],
+                contactsFindList:[
+                    // {userId: 1, name: "张世饿死"},
+                    // {userId: 2, name: "张世饿死"},
+                    // {userId: 3, name: "张世饿死"},
+                    // {userId: 4, name: "张世饿死"},
+                    // {userId: 5, name: "张世饿死"},
+                    // {userId: 6, name: "张世饿死"},
+                    // {userId: 7, name: "张世饿死"},
+                    // {userId: 8, name: "张世饿死"},
+                    // {userId: 9, name: "张世饿死"},
+                    // {userId: 10, name: "张世饿死"},
+                ],
+                chatList:null,
+                chat: {//当前聊天窗口是哪个聊天关系
+                    fromUserId: "",
+                    toUserId: "",
+                    toUserName: "",
+                },
+                chatMessage: {
+                    id: "",
+                    fromUserId: "",
+                    content: "",
+                    time: "",
+                    contentType: "",
+                    toUserId: "",
+                },
+                socket: null,
+                form: null,
+                projectInfoList:[
+                    // {
+                    //     id: 1,
+                    //     chargeUserId:123,
+                    //     chargeUsername: "刘家辉",
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 2,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 3,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 4,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 5,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 6,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 7,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 8,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 9,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 10,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 11,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 12,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 13,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 14,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 15,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 16,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                    // {
+                    //     id: 17,
+                    //     chargeUserId:123,
+                    //     phone:"189515451545",
+                    //     email:"4564564895@qq.com",
+                    //     projectIntroduce:"kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum:5,
+                    //     projectStatus:"发布",
+                    //     projectType:"个人",
+                    //     projectLabel:"科技,计算机,编程",
+                    //     projectName:"省钱电商平台",
+                    // },
+                ],
+                projectInfo:{
+                    id: null,
+                    chargeUsername:"",
+                    phone:"",
+                    email:"",
+                    projectIntroduce:"",
+                    projectPersonNum:1,
+                    projectStatus:"",
+                    projectType:"",
+                    projectLabel:"",
+                    projectName:"",
+                },
+                projectManager: false,
+                wait_:60,
+                event: null,
+                disable:false,
+                monitor:false,
+                searchProjectList:[],
+                searchPostList:[],
+                cnt:0,
+            }
+        },
+        computed: {//计算属性
+
+        },
+        watch: {//监听数据
+            followType(item1,item2){//当followType改变时，执行
+                let data ={"userId":this.userId,"type":item1};
+                getFollowList(JSON.stringify(data)).then((res)=>{
+                   this.followList = res.data;
+                });
+            },
+            contactsList(item1, item2){
+                for (let item of item1){
+                    if (item.unRead === 1){
+                        console.log("检测到私信联系人数据发生变化");
+                        this.unReadeInfo = 1;
+                        console.log(this.unReadeInfo);
+                        return ;
+                    }
+                }
+                //如果执行到这一步代表没有未读信息
+                this.unReadeInfo =0;
+            }
+        },
+        created() {//钩子函数,在html渲染之前执行
+            window.go_co_creation_center1=this.go_co_creation_center1;
+            window.sendCode = this.sendCode;
+            window.changeFollowList = this.changeFollowList;
+            window.changeContactsList = this.changeContactsList;
+            window.getSearch = this.getSearch;
+            window.clear_monitor = this.clear_monitor;
+        },
+        mounted() {//钩子函数,在html渲染之后执行
+            setInterval(this.showTime_, 1000);
+        },
+        methods: {//事件绑定函数节点
+            clear_(){//数据恢复初始化状态
+                this.contactsName=null;
+                this.input=null;
+                this.userId=localStorage.getItem('userId');
+                this.isLogin=false;
+                this.userType=null;
+                this.name = null;
+                this.avatar=null;
+                this.chatAvatar=null;
+                this.username= "";
+                this.password= "";
+                this.registerInfo=null;
+                this.code="";
+                this.newPassword= "";
+                this.newPassword2= "";
+                this.personalInfo= null;
+                this.enterpriseInfo=null;
+                this.followList=null;
+                this.postCollectionList=null;
+                this.contactsList=null;
+                this.contactsFindList=null;
+                this.chatList=null;
+                this.chat=null;
+                this.socket=null;
+                this.form=null;
+                this.projectManager=false;
+            },
+            refresh_(){
+                //强制刷新页面
+                this.iframeUrl =this.iframeUrl+"?data"+this.cnt;
+                this.cnt++;
+            },
+            getSearch(){
+                return {
+                    "input": this.input,
+                    "select_": this.select_,
+                    "monitor": this.monitor,
+                    "searchProjectList": this.searchProjectList,
+                    "searchPostList": this.searchPostList,
+                }
+            },
+            search_() {
+                if (this.select_ === "请选择"){
+                    this.$message({
+                        message: "请选择搜索类型",
+                        center: true,
+                        showClose: true,
+                        type: "info",
+                    });
+                }else if (this.select_ === "项目"){
+                    let data = {"input": this.input};
+                    getSearchProjectList(JSON.stringify(data)).then((res)=>{
+                        this.searchProjectList = res.data;
+                    });
+                    this.handleSelect(3);
+                    this.monitor = true;
+                }else {//贴子
+                    let data = {"input": this.input};
+                    getSearchPostList(JSON.stringify(data)).then((res)=>{
+                        this.searchPostList = res.data;
+                    });
+                    this.handleSelect(2);
+                    this.monitor = true;
+                }
+            },
+            clear_monitor(){
+                this.monitor = false;
+            },
+            personalCenter: function () {
+                this.drawer = true;
+            },
+            loginOut() {
+                loginOut().then((res)=>{
+                    this.$message({
+                        showClose: true,
+                        message: '账号已注销',
+                        center:true,
+                        type:'success',
+                    });
+                    window.localStorage.removeItem('userId');
+                });
+                this.isLogin = false;
+            },
+            go_login() {
+                this.centerDialogVisible1 = false;
+                this.centerDialogVisible = true;
+            },
+            _register() {
+                registerUser(JSON.stringify(this.registerInfo)).then((res)=>{
+                    this.$message({
+                        showClose: true,
+                        message: '注册成功!即将跳转登录界面',
+                        center:true,
+                        type:'success',
+                    });
+                    this.centerDialogVisible1 = false;
+                    this.centerDialogVisible = true;
+                })
+            },
+            async login() {
+                var _this =this;
+                const regex1 = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+                if(!regex1.test(this.username)) {
+                    this.$message({
+                        showClose: true,
+                        message: '请输入正确的手机号！',
+                        center:true,
+                        type:'error',
+                    });
+                    return ;
+                }
+                let loginInfo ={"username":this.username, "password":this.password};
+                await login(JSON.stringify(loginInfo)).then((res)=>{
+                    this.$message({
+                        message: "登录成功",
+                        center: true,
+                        showClose: true,
+                        type: "success",
+                    });
+                    console.log("这是登录信息");
+                    console.log(res);
+                    window.localStorage.setItem('userId',res.data.id);
+                    this.userType = res.data.userType;
+                    this.unReadeInfo = res.data.unReadeInfo;
+                    if (res.data.userType === '个人'){
+                        this.personalInfo = res.data.personalInformation;
+                    }else{
+                        this.enterpriseInfo = res.data.enterpriseInformation;
+                    }
+                    this.openSocket();//开启socket服务
+                });
+                //登录成功后加载联系人信息
+                var userId;
+                if (this.userType === '个人'){
+                    userId = this.personalInfo.userId;
+                }else {
+                    userId = this.enterpriseInfo.userId;
+                }
+                await getAllContacts(userId).then((res)=>{
+                    this.contactsList = res.data;
+                });
+                this.centerDialogVisible = false;
+                this.isLogin = true;
+            },
+            go_register() {
+                this.centerDialogVisible = false;
+                this.centerDialogVisible1 = true;
+            },
+            showTime_() {
+                var time = new Date();
+                var year = time.getFullYear();
+                var month = time.getMonth();
+                var day = time.getDate();
+                var week = time.getDay();
+                var hour = time.getHours();
+                var minute = time.getMinutes();
+                var second = time.getSeconds();
+                var weekArr = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+                var showTime = year + "/" + month + "/" + day + " " + weekArr[week] + " " + hour + ":" + minute + ":" + second;
+                this.dataTime = showTime;
+            },
+            handleSelect(index) {
+                if (index == 1) {
+                    this.cnt++;
+                    this.iframeUrl = "homePage.html?data="+this.cnt;
+                } else if (index == 2) {
+                    this.cnt++;
+                    this.iframeUrl = "community_forum/community_forum.html?data="+this.cnt;
+                } else if (index == 3) {
+                    this.cnt++;
+                    this.iframeUrl = "co_creation_platform/co_creation_platform.html?data="+this.cnt;
+                } else {
+                    this.cnt++;
+                    this.iframeUrl = "study/study.html?data="+this.cnt;
+                }
+            },
+            forgotPassword() {
+                this.centerDialogVisible = false;
+                this.centerDialogVisible2 = true;
+            },
+            resetPassword() {
+                //验证密码
+                const regex1 = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+                if(!regex1.test(this.registerInfo.phone)) {
+                    this.$message({
+                        showClose: true,
+                        message: '请输入正确的手机号！',
+                        center:true,
+                        type:'error',
+                    });
+                    return ;
+                }
+                if(this.newPassword !== this.newPassword2){
+                    this.$message({
+                        showClose: true,
+                        message: '两次密码输入不同！',
+                        center:true,
+                        type:'error',
+                    });
+                    return ;
+                }
+                let data = {"password": this.newPassword,"username": this.registerInfo.phone,"code":this.code};
+                resetPassword(JSON.stringify(data)).then((res)=>{
+                    this.$message({
+                        showClose: true,
+                        message: '重置密码成功！',
+                        center:true,
+                        type:'success',
+                    });
+                    this.centerDialogVisible2 = false;
+                    this.centerDialogVisible = true;
+                });
+
+            },
+            sendCode(e) {
+                const regex1 = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+                if (this.wait_ === 60){
+                    if(!regex1.test(this.registerInfo.phone)){
+                        this.$message({
+                            showClose: true,
+                            message: '请输入正确的手机号！',
+                            center:true,
+                            type:'error',
+                        });
+                        return ;
+                    }
+                }
+                if(this.event == null) {
+                    this.event = e;
+                }
+                if (this.wait_ === 0) {
+                    this.disable = false;
+                    this.event.target.innerHTML = "获取验证码";
+                    this.wait_ = 60;
+                } else {
+                    if(this.wait_ === 60) {
+                        sendCode_(this.registerInfo.phone).then((res)=>{
+                            this.$message({
+                                showClose: true,
+                                message: '验证码发送成功',
+                                center:true,
+                                type:'success',
+                            });
+                            this.code = res.data;
+                        });
+                    }
+                    this.disable = true;
+                    this.event.target.innerHTML=this.wait_+"秒后重新发送";
+                    this.wait_--;
+                    setTimeout(function(e) {window.sendCode(e)},1000);
+                }
+            },
+            handleAvatarSuccess(res, file) {
+            },
+            beforeAvatarUpload(file) {
+                var _this = this;
+                // const isJPG = file.type === 'image/jpeg';
+                // const isLt2M = file.size / 1024 / 1024 < 2;
+
+                // if (!isJPG) {
+                //     this.$message.error('上传头像图片只能是 JPG 格式!');
+                // }
+                // if (!isLt2M) {
+                //     this.$message.error('上传头像图片大小不能超过 2MB!');
+                // }
+                //return isJPG && isLt2M;
+                let formData = new FormData();
+                formData.append("file", file);
+                axios
+                    .post("http://localhost:8080/user/modifyAvatar", formData)
+                    .then((res)=> {
+                        if(_this.userType === '个人'){
+                            _this.personalInfo.avatar = res.data.data;
+                        }else if(_this.userType === '企业'){
+                            _this.enterpriseInfo.avatar = res.data.data;
+                        }else{
+                            _this.$message.error('系统异常：用户类型错误');
+                        }
+                        if(_this.userType === '个人'){
+                            axios
+                                .post("http://localhost:8080/personal/savePersonalInfo",JSON.stringify(_this.personalInfo));
+                        }else {
+                            axios
+                                .post("http://localhost:8080/enterprise/saveEnterpriseInfo",JSON.stringify(_this.enterpriseInfo));
+                        }
+                    })
+                    .catch(function() {
+                        _this.$message.error('头像上传失败！');
+                    });
+                return false;
+            },
+            async go_private_letter() {
+                //初始化全部联系人列表
+                var userId;
+                if (this.userType === '个人'){
+                    userId = this.personalInfo.userId;
+                }else {
+                    userId = this.enterpriseInfo.userId;
+                }
+                await getAllContacts(userId).then((res)=>{
+                    this.contactsList = res.data;
+                });
+                if (this.drawer === false) {
+                    this.drawer = true;
+                }
+                this.private_letter_page = true;
+            },
+            async go_follow() {
+                let data ={"userId":window.localStorage.getItem("userId"),"type":this.followType}
+                await getFollowList(JSON.stringify(data)).then((res)=>{
+                    this.followList = res.data;
+                });
+                this.follow_page = true;
+            },
+            async go_collection() {
+                await getPostCollection(window.localStorage.getItem("userId")).then((res)=>{
+                    this.postCollectionList = res.data;
+                });
+                this.collection_page = true;
+            },
+            async go_co_creation_center() {
+                await getProject(window.localStorage.getItem('userId')).then((res)=>{
+                    this.projectInfoList = res.data;
+                });
+                this.co_creation_center_page = true;
+            },
+            go_co_creation_center1() {
+                this.drawer = true;
+                this.co_creation_center_page = true;
+            },
+            cancelFollow(index, follow) {
+                //alert(index + follow);
+                cancelFollow(follow.id).then((res)=>{
+                    this.followList.splice(index,1);//remove from the liststart
+                });
+            },
+            getRowKeys(row) {
+                return row.id;
+            },
+            cancelCollection(index, postCollection) {
+                cancelPostCollection(postCollection.id).then((res)=>{
+                    this.postCollectionList.splice(index,1);
+                });
+            },
+            filterDateTime(value, row, column) {
+                const property = column['property'];
+                return row[property] === value;
+            },
+            viewPostDetails(row, column, cell, event) {
+                if (column.label === "贴子标题") {
+                    //alert(row.postTitle);
+                }
+
+            },
+            async go_send_chat_message(contact) {
+                //用户点击私信，清除该联系人关系下所有未读信息标记，并把联系关系未读标记置为已读
+                console.log(contact);
+                if (contact.unRead === 1){//如果存在未读信息
+                    for (let i = 0; i <this.contactsList.length; i++) {
+                        if (this.contactsList[i].id === contact.id) {
+                            //修改数据库该关系未读信息
+                            await changeToRead(JSON.stringify(this.contactsList[i])).then((res)=>{
+
+                            });
+                            console.log("修改未读信息0");
+                            this.contactsList[i].unRead = 0;//没有未读消息
+                            var contacts__ = this.contactsList;
+                            this.contactsList = [];
+                            this.contactsList = contacts__;
+                            console.log("修改未读信息1");
+                            this.$forceUpdate();//强制刷新
+                            break;
+                        }
+                    }
+                }
+                this.chat.toUserId = contact.toUserId;
+                //this.chat.fromUserId = window.localStorage.getItem("userId");
+                if(this.userType === '个人'){
+                    this.chat.fromUserId = this.personalInfo.userId;
+                }else {
+                    this.chat.fromUserId = this.enterpriseInfo.userId;
+                }
+                let chatList = this.chatList;
+                this.chatList = null;
+                this.chatList = chatList;
+                this.$forceUpdate();
+                this.chat.toUserName = contact.name;
+                this.chatVisible = true;
+            },
+            delete_contacts(id) {
+                //alert(id);
+                deleteContact(id).then((res) =>{
+                    for (let i = 0; i < this.contactsList.length; i++){
+                        if (this.contactsList[i].id === id) {
+                            this.contactsList.splice(i, 1);
+                            break;
+                        }
+                    }
+                });
+            },
+            openSocket() {
+                var _this =this;
+                if (typeof WebSocket == "undefined") {
+                    //console.log("您的浏览器不支持WebSocket");
+                } else {
+                    //console.log("您的浏览器支持WebSocket");
+                    //实现化WebSocket对象，指定要连接的服务器地址与端口  建立连接
+                    //等同于socket = new WebSocket("ws://localhost:8888/xxxx/im/25");
+                    //var socketUrl="${request.contextPath}/im/"+$("#userId").val();
+                    var socketUrl =
+                        "http://localhost:8080/im_server/" + window.localStorage.getItem("userId");
+                    socketUrl = socketUrl.replace("https", "ws").replace("http", "ws");
+                    //console.log(socketUrl);
+                    if (this.socket != null) {
+                        this.socket.close();
+                        this.socket = null;
+                    }
+                    //this.socket = new WebSocket(socketUrl);
+                    //打开事件
+                    this.socket = new WebSocket(socketUrl);
+                    //打开事件
+                    this.socket.onopen = function () {
+                    };
+                    //获得消息事件
+                    this.socket.onmessage = function (msg) {
+                        //发现消息进入将其添加进入当前用户的聊天记录集合
+                        /*
+                        fromUserId: 123,
+                        toUserId: "111",
+                        toUserName: "袁合康",
+                         */
+                        let _ind= 0;
+                        if (_this.chatList == null) {
+                            _this.chatList = JSON.parse(msg.data);
+                            _ind=1;
+                        }else {
+                            if(_ind ===1) return;
+                            let chatMessage = JSON.parse(msg.data);
+                            //判断当前用户是否在该聊天窗口
+                            //判断聊天窗口是否打开
+                            if (_this.chatVisible === true) {
+                                //console.log(_this.chat);
+                                if (_this.chat.toUserId !== chatMessage.fromUserId){
+                                    console.log("abcde");
+                                    //当前用户打开的窗口不属于该聊天，添加未读信息标记
+                                    for (let i = 0; i < _this.contactsList.length; i++) {
+                                        if (_this.contactsList[i].toUserId === chatMessage.fromUserId) {
+                                            console.log("abcdef");
+                                            //alert("Please   await your message tag for unRead 1");
+                                            let contact = _this.contactsList[i];//存在未读消息
+                                            contact.unRead = 1;
+                                            _this.$set(_this.contactsList,i,contact);
+                                            break;
+                                        }
+                                    }
+                                }else {
+                                    //当前用户打开的聊天窗口属于该聊天，将该关系的聊天记录置为已读
+                                    toRead(JSON.stringify(chatMessage));
+                                    chatMessage.isRead = 1;
+                                }
+
+                            }else {//当前用户不在该聊天窗口
+                                //找到联系人关系，直接添加未读标记
+                                for (let i = 0; i < _this.contactsList.length; i++) {
+                                    if (_this.contactsList[i].toUserId === chatMessage.fromUserId) {
+                                        //_this.contactsList[i].unRead = 1;//存在未读消息
+                                        let contact = _this.contactsList[i];//存在未读消息
+                                        contact.unRead = 1;
+                                        _this.$set(_this.contactsList,i,contact);
+                                        break;
+                                    }
+                                }
+                            }
+                            let messageList = _this.chatList;
+                            messageList.push(chatMessage);
+                            _this.chatList = messageList;
+                        }
+                        // _this.chatList.sort(function (a, b) {//根据时间排序
+                        //     if (a.time < b.time) {
+                        //         return -1;
+                        //     } else if (a.time > b.time) {
+                        //         return 1;
+                        //     } else {
+                        //         if (a.time < b.time) {
+                        //             return 1;
+                        //         } else if (a.time > b.time) {
+                        //             return -1;
+                        //         }
+                        //         return 0;
+                        //     }
+                        // });
+                    };
+                    //关闭事件
+                    this.socket.onclose = function () {
+                        //alert("socket closed");
+                        //console.log("websocket已关闭");
+                    };
+                    //发生了错误事件
+                    this.socket.onerror = function () {
+                        //alert("socket error");
+                        console.log("websocket发生了错误");
+                    };
+                }
+            },
+            sendMessage() {
+                if (typeof WebSocket == "undefined") {
+                    //console.log("您的浏览器不支持WebSocket");
+                } else {
+                    //console.log("您的浏览器支持WebSocket");
+                    // console.log(
+                    //     '{"toUserId":"' +
+                    //     this.chatMessage.toUserId +
+                    //     '","contentText":"' +
+                    //     this.chatMessage.content +
+                    //     '"}'
+                    // );
+                    //完善信息
+                    this.chatMessage.contentType = "文本";
+                    this.chatMessage.fromUserId = this.chat.fromUserId;
+                    this.chatMessage.toUserId = this.chat.toUserId;
+                    this.chatMessage.time = this.dataTime;
+                    let chatMessage1={
+                        id: this.chatMessage.id,
+                        fromUserId: this.chatMessage.fromUserId,
+                        content: this.chatMessage.content,
+                        time: this.chatMessage.time,
+                        contentType: this.chatMessage.contentType,
+                        toUserId: this.chatMessage.toUserId,
+                    };
+                    this.chatList.push(chatMessage1);
+                    //alert(JSON.stringify(this.chatMessage));
+                    //alert(JSON.stringify(chatMessage1));
+                    this.socket.send(JSON.stringify(this.chatMessage));//保存到数据库中
+                    this.chatMessage.content="";//清空文本框;
+                }
+            },
+            go_project_management(row){
+                this.projectInfo = row;
+                this.projectManager = true;
+            },
+            updateProjectInfo(){
+                // alert(this.projectInfo);
+                updateProjectInfo(JSON.stringify(this.projectInfo)).then((res)=>{
+                   this.$message({
+                       center: true,
+                       message: "项目信息修改成功",
+                       showClose: true,
+                       type: "success",
+                   })
+                });
+            },
+            findContacts(){
+                // alert(this.contactsName);
+                findContactList(this.contactsName).then((res)=>{
+                    this.contactsFindList = res.data;
+                })
+            },
+            addContacts (row) {
+                // alert(row);
+                addContacts(JSON.stringify(row)).then((res)=>{
+                    this.contactsList.push(res.data);//将新添加的联系人追加到全部联系人中
+                })
+            },
+            saveUserInfo(index){
+                if(index === 1){
+                    //个人信息保存
+                    savePersonalInfo(JSON.stringify(this.personalInfo)).then((res)=>{
+                       this.$message({
+                           center: true,
+                           message:"个人信息已保存",
+                           showClose: true,
+                           type: "success",
+                       });
+                    });
+                }else{
+                    //企业信息保存
+                    saveEnterpriseInfo(JSON.stringify(this.enterpriseInfo)).then((res)=>{
+                        this.$message({
+                            center: true,
+                            message:"企业信息已保存",
+                            showClose: true,
+                            type: "success",
+                        });
+                    });
+                }
+            },
+            addProjectInfo(){
+                var name;
+                if(this.userType === "个人"){
+                    this.projectInfo.chargeUsername = this.personalInfo.name;
+                }else {
+                    this.projectInfo.chargeUsername = this.enterpriseInfo.name;
+                }
+                name = this.projectInfo.chargeUsername;
+                addProjectInfo(JSON.stringify(this.projectInfo)).then((res)=>{
+                   this.projectInfoList.push(res.data);
+                   this.projectInfo={
+                       id: null,
+                       chargeUsername:name,
+                       phone:"",
+                       email:"",
+                       projectIntroduce:"",
+                       projectPersonNum:null,
+                       projectStatus:"",
+                       projectType:"",
+                       projectLabel:"",
+                       projectName:"",
+                   };//重置新建项目信息
+                });
+            },
+            changeFollowList(followList_){
+                this.$message({
+                    showClose: true,
+                    message: '关注成功',
+                    center:true,
+                    type:'success',
+                });
+                this.followList.push(followList_);
+            },
+            changeContactsList(contactsList_){
+                this.$message({
+                    showClose: true,
+                    message: '已添加到联系人',
+                    center:true,
+                    type:'success',
+                });
+                this.contactsList.push(contactsList_);
+            }
+        }
+    })
+</script>
+</html>

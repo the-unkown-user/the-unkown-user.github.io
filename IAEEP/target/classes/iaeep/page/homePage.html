@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="../../iaeep/plugins/element-ui/index.css" />
+</head>
+<style>
+    .homePage {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+    .homePage img {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<body>
+
+<div id = "homePage" class="homePage">
+
+    <el-carousel :interval="4000" type="card" height="500px" style="margin-top: 15px">
+        <el-carousel-item v-for="item in imgData" :key="imgData.value">
+            <!--走马灯中也可以添加一些文字信息-->
+            <!-- <p align="center" style="font-size: x-large;font-family: 华文新魏;color: #f56c6c">{{item.txt}}</p>-->
+            <img ref="imgHeight" :src="item.src" object-fit="cover">
+        </el-carousel-item>
+    </el-carousel>
+
+
+</div>
+
+
+</body>
+
+<script src="../../iaeep/plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../iaeep/plugins/element-ui/index.js"></script>
+<!-- 引入axios -->
+<script src="../../iaeep/plugins/axios/axios.min.js"></script>
+<script src="../../iaeep/js/request.js"></script>
+<script src="../../iaeep/js/validate.js"></script>
+<script src="../../iaeep/js/index.js"></script>
+
+<script>
+    new Vue({
+        el:'#homePage',
+        data() {
+            return {
+                imgData: [
+                    {
+                        src: '../../iaeep/image/carousel_img/6.png'
+                    }, {
+                        src: '../../iaeep/image/carousel_img/7.png'
+                    }, {
+                        src: '../../iaeep/image/carousel_img/8.png'
+                    },
+                ],
+            }
+        },
+        created(){
+
+        },
+        mounted(){
+            //this.setBannerH;
+        },
+        methods:{
+            init(){
+
+            },
+
+        }
+    })
+</script>
+</html>

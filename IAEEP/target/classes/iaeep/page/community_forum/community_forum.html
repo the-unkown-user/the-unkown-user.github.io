@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>论坛交流</title>
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
+    <link rel="stylesheet" href="../../styles/css/community_forum.css"/>
+    <link rel="stylesheet" href="../../editormd/css/editormd.css">
+    <link rel="stylesheet" href="../../styles/css/vant.min.css"/>
+</head>
+<body>
+    <div id="forumApp" class="forumAppClass">
+
+        <div class="left" v-if="show == 0">
+            <div class="new">
+                <!--最新帖子-->
+                <div class="title">
+                    <h3>最新帖子</h3>
+                </div>
+                <el-divider></el-divider>
+                <div class="main">
+                    <el-table
+                            :data="newPostList.slice(0,loadNum)"
+                            style="width: 100%;cursor:pointer;"
+                            height="230px"
+                            size="small"
+                            @row-click="viewDetails"
+                            :show-header="False"
+                            :border="False">
+                        <el-table-column
+                                prop="postTitle"
+                                width="800">
+                        </el-table-column>
+
+                        <el-table-column
+                            width="120">
+                            <template slot-scope="scope">
+                                <el-popover
+                                        placement="top"
+                                        width="165"
+                                        trigger="hover">
+                                    <el-button size="mini" @click="followUser(scope.row.username)">关注</el-button>
+                                    <el-button size="mini" @click="addContactsUser(scope.row.username)" >添加联系人</el-button>
+                                    <span slot="reference">{{scope.row.username}}</span>
+                                </el-popover>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                            prop="date"
+                            width="120"></el-table-column>
+                    </el-table>
+                </div>
+            </div>
+
+            <div class="hot" >
+                <!--热门帖子-->
+                <div class="title">
+                    <h3>热门帖子</h3>
+                </div>
+                <el-divider></el-divider>
+                <div class="main">
+                    <el-table
+                            :data="hotPostList.slice(0,5)"
+                            style="width: 100%;cursor:pointer;"
+                            @row-click="viewDetails"
+                            height="200px"
+                            size="small"
+                            :show-header="False"
+                            :border="False">
+                        <el-table-column
+                                :show-overflow-tooltip="true"
+                                prop="postTitle"
+                                width="800">
+                        </el-table-column>
+
+                        <el-table-column
+                                :show-overflow-tooltip="true"
+                                width="120">
+                            <template slot-scope="scope">
+                                <el-popover
+                                        placement="top"
+                                        width="165"
+                                        trigger="hover">
+                                    <el-button size="mini" @click="followUser(scope.row.username)">关注</el-button>
+                                    <el-button size="mini" @click="addContactsUser(scope.row.username)" >添加联系人</el-button>
+                                    <span slot="reference">{{scope.row.username}}</span>
+                                </el-popover>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="date"
+                                width="120"></el-table-column>
+                    </el-table>
+                </div>
+            </div>
+        </div>
+
+        <div class="left" v-else-if="show == 1">
+            <!--展示贴子详情-->
+            <iframe
+                    :src="iframeUrl"
+                    width="100%"
+                    height="100%"
+                    frameborder="0"
+            ></iframe>
+            <div  id="article-content" style="position: relative; margin-top: 20px;">
+                <textarea name="postContent" id="content" style="display:none;"></textarea>
+            </div>
+        </div>
+
+        <div class="left" v-else>
+            <iframe
+                    :src="iframeUrl"
+                    width="100%"
+                    height="100%"
+                    frameborder="0"
+            ></iframe>
+        </div>
+
+
+        <div class = "right">
+            <div class="follow">
+                <!--用户信息-->
+                <div class="title">
+                    <el-avatar :size="45" :src="userInfo.avatar" style="margin-left: 100px;"></el-avatar>
+                    <h3 style="position: relative; float: right; margin-right: 120px;">{{userInfo.name}}</h3>
+                </div>
+                <el-divider></el-divider>
+                <!--用户统计信息-->
+                <div class="user_statistics">
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span style="color: #bbbbbb">粉丝</span>&nbsp;&nbsp;&nbsp;
+                        <span style="color: #bbbbbb">{{userInfo.follow}}</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span style="color: #bbbbbb">获赞</span>&nbsp;&nbsp;&nbsp;
+                        <span style="color: #bbbbbb">{{userInfo.like}}</span>
+                    </p>
+                    <p>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span style="color: #bbbbbb">收藏</span>&nbsp;&nbsp;&nbsp;
+                        <span style="color: #bbbbbb">{{userInfo.collection}}</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span style="color: #bbbbbb">帖子</span>&nbsp;&nbsp;&nbsp;
+                        <span style="color: #bbbbbb">{{userInfo.posts}}</span>
+                    </p>
+                    <el-button size="mini" style="position: absolute; margin-right: 45%; margin-left: 35%; width: 120px;" @click="writePosts">写帖子</el-button>
+                </div>
+            </div>
+
+            <div class="recommend">
+                <!--推荐帖子-->
+                <div class="title">
+                    <h3>推荐帖子</h3>
+                </div>
+                <el-divider></el-divider>
+
+                <div class="main">
+                    <el-table
+                            :data="recommendPostList.slice(0,7)"
+                            style="width: 100%;cursor:pointer;"
+                            height="300px"
+                            size="small"
+                            :show-header="False"
+                            @row-click="viewDetails"
+                            :border="False">
+                        <el-table-column
+                                :show-overflow-tooltip="true"
+                                prop="postTitle"
+                                width="180">
+                        </el-table-column>
+
+                        <el-table-column
+                                :show-overflow-tooltip="true"
+                                width="100">
+                            <template slot-scope="scope">
+                                <el-popover
+                                        placement="top"
+                                        width="165"
+                                        trigger="hover">
+                                    <el-button size="mini" @click="followUser(scope.row.username)">关注</el-button>
+                                    <el-button size="mini" @click="addContactsUser(scope.row.username)" >添加联系人</el-button>
+                                    <span slot="reference">{{scope.row.username}}</span>
+                                </el-popover>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="date"
+                                width="100"></el-table-column>
+                    </el-table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</body>
+<script src="../../plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../plugins/element-ui/index.js"></script>
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/vant.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../js/validate.js"></script>
+<script src="../../js/index.js"></script>
+<script src="../../editormd/jquery-3.6.1.js"></script>
+<script src="../../editormd/editormd.min.js"></script>
+<script src="../../api/community_forum.js"></script>
+<script>
+    new Vue({
+        el : '#forumApp',
+        data()  {
+            return {
+                newPostList:[
+                    {id: "2", postTitle: "sgefdg了双方各", time: "2016-07-07",username: "沙东"},
+                    {id: "3", postTitle: "独守空闺界面", time: "2016-07-07",username: "沙东"},
+                    {id: "4", postTitle: "洗的", time: "2015-07-07",username: "沙东"},
+                    {id: "5", postTitle: "索拉卡难过而", time: "2016-07-07",username: "沙东"},
+                    {id: "6", postTitle: "社发大水", time: "2015-07-07",username: "沙东"},
+                    {id: "7", postTitle: "格化工厂VR个", time: "2018-07-07",username: "沙东"},
+                    {id: "8", postTitle: "像个人各个", time: "2015-07-07",username: "沙东"},
+                    {id: "9", postTitle: "的后个人所得", time: "2018-07-07",username: "沙东"},
+                    {id: "10", postTitle: "和个人第三个", time: "2015-07-07",username: "沙东"},
+                    {id: "11", postTitle: "使得和个人股", time: "2015-07-07",username: "沙东"},
+                    {id: "12", postTitle: "胆识过人", time: "2015-07-07",username: "沙东"},
+                    {id: "13", postTitle: " 会如何给", time: "2018-07-07",username: "沙东"},
+                    {id: "14", postTitle: "和润滑油", time: "2015-08-07",username: "沙东"},
+                    {id: "15", postTitle: "很多人很容易", time: "2015-07-07",username: "沙东"},
+                    {id: "16", postTitle: "胶体溶液", time: "2015-07-07",username: "沙东"},
+                    {id: "17", postTitle: "我的心声登革热", time: "2015-07-07",username: "沙东"},
+                    {id: "18", postTitle: "大好人和", time: "2015-07-07",username: "沙东"},
+                    {id: "19", postTitle: "加热管三个数", time: "2015-07-07",username: "沙东"},
+                    {id: "20", postTitle: "人员让他的风格", time: "2015-07-07",username: "沙东"},
+                    {id: "21", postTitle: "已汇入提供的", time: "2015-07-07",username: "沙东"},
+                    {id: "22", postTitle: "当然有好人", time: "2015-07-07",username: "沙东"},
+                    {id: "23", postTitle: "任何人都", time: "2015-07-07",username: "沙东"},
+                    {id: "24", postTitle: "当然同一伙人", time: "2015-07-07",username: "沙东"},
+                    {id: "25", postTitle: "的还得给", time: "2015-07-07",username: "沙东"},
+                    {id: "26", postTitle: "德国人高", time: "2015-07-07",username: "沙东"},
+                ],
+                hotPostList:[
+                    {id: "5", postTitle: "索拉卡难过而", time: "2016-07-07",username: "沙东"},
+                    {id: "6", postTitle: "社发大水", time: "2015-07-07",username: "沙东"},
+                    {id: "7", postTitle: "格化工厂VR个", time: "2018-07-07",username: "沙东"},
+                    {id: "8", postTitle: "像个人各个", time: "2015-07-07",username: "沙东"},
+                    {id: "9", postTitle: "的后个人所得", time: "2018-07-07",username: "沙东"},
+                    {id: "10", postTitle: "和个人第三个", time: "2015-07-07",username: "沙东"},
+                    {id: "11", postTitle: "使得和个人股", time: "2015-07-07",username: "沙东"},
+                    {id: "12", postTitle: "胆识过人", time: "2015-07-07",username: "沙东"},
+                    {id: "13", postTitle: " 会如何给", time: "2018-07-07",username: "沙东"},
+                    {id: "12", postTitle: "胆识过人", time: "2015-07-07"},
+                    {id: "13", postTitle: " 会如何给", time: "2018-07-07"},
+                    {id: "14", postTitle: "和润滑油", time: "2015-08-07"},
+                    {id: "15", postTitle: "很多人很容易", time: "2015-07-07"},
+                    {id: "16", postTitle: "胶体溶液", time: "2015-07-07"},
+                    {id: "17", postTitle: "我的心声登革热", time: "2015-07-07"},
+                    {id: "18", postTitle: "大好人和", time: "2015-07-07"},
+                    {id: "19", postTitle: "加热管三个数", time: "2015-07-07"},
+                    {id: "20", postTitle: "人员让他的风格", time: "2015-07-07"},
+                    {id: "21", postTitle: "已汇入提供的", time: "2015-07-07"},
+                    {id: "22", postTitle: "当然有好人", time: "2015-07-07"},
+                    {id: "23", postTitle: "任何人都", time: "2015-07-07"},
+                    {id: "24", postTitle: "当然同一伙人", time: "2015-07-07"},
+                    {id: "25", postTitle: "的还得给", time: "2015-07-07"},
+                    {id: "26", postTitle: "德国人高", time: "2015-07-07"},
+                ],
+                followPostList:[
+                    // {id: "5", postTitle: "索拉卡难过而", time: "2016-07-07",username: "沙东"},
+                    // {id: "6", postTitle: "社发大水", time: "2015-07-07",username: "沙东"},
+                    // {id: "7", postTitle: "格化工厂VR个", time: "2018-07-07",username: "沙东"},
+                    // {id: "8", postTitle: "像个人各个", time: "2015-07-07",username: "沙东"},
+                    // {id: "9", postTitle: "的后个人所得", time: "2018-07-07",username: "沙东"},
+                    // {id: "10", postTitle: "和个人第三个", time: "2015-07-07",username: "沙东"},
+                    // {id: "11", postTitle: "使得和个人股", time: "2015-07-07",username: "沙东"},
+                    // {id: "12", postTitle: "胆识过人", time: "2015-07-07",username: "沙东"},
+                    // {id: "13", postTitle: " 会如何给", time: "2018-07-07",username: "沙东"},
+                    // {id: "13", postTitle: " 会如何给", time: "2018-07-07"},
+                    // {id: "14", postTitle: "和润滑油", time: "2015-08-07"},
+                    // {id: "15", postTitle: "很多人很容易", time: "2015-07-07"},
+                    // {id: "16", postTitle: "胶体溶液", time: "2015-07-07"},
+                    // {id: "17", postTitle: "我的心声登革热", time: "2015-07-07"},
+                    // {id: "18", postTitle: "大好人和", time: "2015-07-07"},
+                    // {id: "19", postTitle: "加热管三个数", time: "2015-07-07"},
+                    // {id: "20", postTitle: "人员让他的风格", time: "2015-07-07"},
+                    // {id: "21", postTitle: "已汇入提供的", time: "2015-07-07"},
+                    // {id: "22", postTitle: "当然有好人", time: "2015-07-07"},
+                    // {id: "23", postTitle: "任何人都", time: "2015-07-07"},
+                    // {id: "24", postTitle: "当然同一伙人", time: "2015-07-07"},
+                    // {id: "25", postTitle: "的还得给", time: "2015-07-07"},
+                    // {id: "26", postTitle: "德国人高", time: "2015-07-07"},
+                ],
+                recommendPostList:[
+                    // {id: "5", postTitle: "索拉卡难过而", time: "2016-07-07",username: "沙东"},
+                    // {id: "6", postTitle: "社发大水", time: "2015-07-07",username: "沙东"},
+                    // {id: "7", postTitle: "格化工厂VR个", time: "2018-07-07",username: "沙东"},
+                    // {id: "8", postTitle: "像个人各个", time: "2015-07-07",username: "沙东"},
+                    // {id: "9", postTitle: "的后个人所得", time: "2018-07-07",username: "沙东"},
+                    // {id: "10", postTitle: "和个人第三个", time: "2015-07-07",username: "沙东"},
+                    // {id: "11", postTitle: "使得和个人股", time: "2015-07-07",username: "沙东"},
+                    // {id: "12", postTitle: "胆识过人", time: "2015-07-07",username: "沙东"},
+                    // {id: "13", postTitle: " 会如何给", time: "2018-07-07",username: "沙东"},
+                    // {id: "14", postTitle: "和润滑油", time: "2015-08-07"},
+                    // {id: "15", postTitle: "很多人很容易", time: "2015-07-07"},
+                    // {id: "16", postTitle: "胶体溶液", time: "2015-07-07"},
+                    // {id: "17", postTitle: "我的心声登革热", time: "2015-07-07"},
+                    // {id: "18", postTitle: "大好人和", time: "2015-07-07"},
+                    // {id: "19", postTitle: "加热管三个数", time: "2015-07-07"},
+                    // {id: "20", postTitle: "人员让他的风格", time: "2015-07-07"},
+                    // {id: "21", postTitle: "已汇入提供的", time: "2015-07-07"},
+                    // {id: "22", postTitle: "当然有好人", time: "2015-07-07"},
+                    // {id: "23", postTitle: "任何人都", time: "2015-07-07"},
+                    // {id: "24", postTitle: "当然同一伙人", time: "2015-07-07"},
+                    // {id: "25", postTitle: "的还得给", time: "2015-07-07"},
+                    // {id: "26", postTitle: "德国人高", time: "2015-07-07"},
+                ],
+                userInfo: {
+                    account: "",
+                    name: "",
+                    userId: "",
+                    phone: "",
+                    email: "",
+                    age: "",
+                    sex: "",
+                    graduateSchool: "",
+                    avatar: "",
+                    like:0,//点赞数
+                    follow:0,//粉丝数
+                    collection:0,//收藏数
+                    posts:0,//发布帖子数
+                },
+                loadNum: 5,
+                True: true,
+                False: false,
+                show: 0,
+                dialogVisible: false,
+                iframeUrl:"",
+                post:{
+                    likeNum: 0,
+                    collectionNum: 0,
+                    id:null,
+                    postContent:"",
+                    postKind: "",
+                    postTitle: "",
+                    userId: null,
+                    time:"",
+                    commentNum: 0,
+                },
+            }
+        },
+        computed: {//计算属性
+
+        },
+        watch: {//监听数据
+
+        },
+        created() {//钩子函数,在html渲染之前执行
+            this.init_();
+        },
+        mounted() {//钩子函数,在html渲染之后执行
+            window.go_back = this.go_back;
+            window.getPost=this.getPost;
+        },
+        methods: {
+            init_(){
+                //初始化最新帖子，前5个
+                getNewPost().then((res)=>{
+                    this.newPostList = res.data;
+                });
+
+                let search = window.parent.getSearch();
+                if (search.monitor === true && search.select_ === "贴子" && search.input !== ""){
+                    //加载搜索结果
+                    this.hotPostList = search.searchPostList;
+                    window.parent.clear_monitor();
+                }else{
+                    //初始化热门帖子，前5个
+                    getHotPost().then((res)=>{
+                        this.hotPostList = res.data;
+                    });
+                }
+
+                //初始化推荐帖子，前7个
+                getRecommendPost().then((res)=>{
+                    this.recommendPostList = res.data;
+                });
+                //初始化用户信息
+                getUserInfo(window.localStorage.getItem("userId")).then((res)=>{
+                   this.userInfo = res.data;
+                   this.userInfo.avatar = "../"+this.userInfo.avatar;
+                });
+            },
+            followUser(v){
+                // alert(v);
+                addFollowUser(v).then((res)=>{
+                    window.parent.changeFollowList(res.data);
+                });
+            },
+            addContactsUser(v){
+                // alert(v);
+                addContactsUser(v).then((res)=>{
+                    window.parent.changeContactsList(res.data);
+                });
+            },
+            viewDetails(row, column, event){
+                //调用api获取贴子详情
+                getPosts(row.id).then((res)=>{
+                    this.post = res.data;
+                    this.iframeUrl = "viewPost.html";
+                    this.show = 1;
+                });
+                //text
+                this.iframeUrl = "viewPost.html";
+                this.show = 1;
+            },
+            writePosts(){
+                this.iframeUrl = "editormd.html";
+                this.show = 2;
+            },
+            go_back(){
+                this.iframeUrl = "";
+                this.show = 0;
+            },
+            getPost (){
+                return this.post;
+            },
+
+        }
+    })
+</script>
+
+</html>

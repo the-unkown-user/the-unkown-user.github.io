@@ -1,0 +1,31 @@
+server:
+  port: 8080  #设置项目启动端口号，默认是80 设置端口号，访问项目时就需要按照设置的端口号访问
+              #http://127.0.0.1(ip地址):8080（端口号）/具体访问的页面地址
+
+spring:
+  application:
+#设置项目应用名称 , 可选
+    name: IAEEP
+  datasource:
+
+    druid:
+      #设置数据库连接池
+      driver-class-name: com.mysql.cj.jdbc.Driver #MySQL数据库的连接驱动 默认是com.mysql.cj.jdbc.Driver
+      #数据库的连接地址3306是MySQL的端口号
+      url: jdbc:mysql://localhost:3306/iaeep?
+        serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+
+      username: root  #设置用户名
+      password: root  #设置MySQL连接密码
+mybatis-plus:
+  configuration:
+    #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
+    map-underscore-to-camel-case: true
+    #日志输出
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: ASSIGN_ID
+  mapper-locations: classpath:/com/iaeep/mapper/*Mapper.xml
+IAEEP:
+  path: D:\IAEEP_img\

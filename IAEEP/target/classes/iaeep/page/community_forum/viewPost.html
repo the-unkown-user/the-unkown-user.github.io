@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <!--Editor.md-->
+    <link rel="stylesheet" href="../../editormd/css/editormd.css"/>
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
+    <link rel="stylesheet" href="../../styles/css/vant.min.css"/>
+    <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+<div>
+    <h2 id="title" style="margin: 0 0 0 0;text-align: center;" ></h2>
+    <button onclick="_back()" style="float: right;width: 100px; margin-right: 30px;margin-bottom: 10px;">返回</button>
+    <br/>
+
+
+    <!--文章主体内容-->
+    <div id="doc-content" style="width: 980px;height: 400px;">
+        <textarea id="postContent" style="display:none;" placeholder="markdown" ></textarea>
+    </div>
+
+
+
+    <span id="author" style="width: 150px;height: 30px;margin-bottom: 20px;padding-bottom: 25px;"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span id="time" style="width: 150px;height: 30px;margin-bottom: 20px;padding-bottom: 25px;"></span>
+    <img onclick="f1()" id="f11" src="../../image/icon/like.png" alt="" style="cursor: pointer;width: 50px;height:30px;margin-top: 20px;margin-left: 450px;"><span id="f1" >50</span>
+    <img onclick="f2()" id="f22" src="../../image/icon/notLike.png" alt="" style="cursor: pointer;width: 50px;height: 30px;margin-top: 20px;"><span id="f2" ></span>
+    <img onclick="f3()" id="f33" src="../../image/icon/Favorite1.png" alt="" style="cursor: pointer;width: 50px;height: 30px;margin-top: 20px;"><span id="f3" >50</span>
+
+    <img onclick="f4()" id="f44" src="../../image/icon/comment.png" alt="" style="cursor: pointer;width: 50px;height: 30px;margin-top: 20px;"><span id="f4" >50</span>
+
+    <div id="commentApp">
+        <el-drawer
+                title="评论"
+                :visible.sync="visible"
+                size="60%"
+                direction="ltr"
+                >
+            <!--评论-->
+            <div  id="id1" class="box1" style="width: 100%;height: 500px; overflow: auto;max-height: 470px;"  >
+                <div class="comment" v-for="(item,index1) in commentList" style="margin: 0 0 0 30px;">
+                    <el-avatar class="avatar" :size="30" :src="item.avatar"></el-avatar>
+                    <span style="height: 30px;padding-bottom: 5px;">{{item.username}}</span>
+                    <span style="height: 30px;padding-bottom: 5px;">{{item.date}}</span>
+                    <img @click="changeLike($event,index1,-1)" src="../../image/icon/like.png" alt="" style="width: 20px;height:20px;margin-left: 30px;"><span v-if="item.commentLikeNum >= 1">{{item.commentLikeNum}}</span>
+                    <img @click="changeComment($event,item)" src="../../image/icon/comment.png" alt="" style="width: 20px;height: 20px;">
+                    <p>{{item.commentContent}}</p>
+                    <div class="reply" v-if="item.commentList1 != null" style="width:100%;max-height: 200px; overflow: auto;" >
+                        <div  v-for="(it,index2) in item.commentList1" style="margin: 0 0 0 30px;">
+                            <el-avatar class="avatar" :size="30" :src="it.avatar"></el-avatar>
+                            <span style="height: 30px;padding-bottom: 5px;">{{it.username}}</span>
+                            <span> 回复 </span>
+                            <span>{{it.toUsername}}</span>
+                            <span style="height: 30px;padding-bottom: 5px;">{{it.date}}</span>
+                            <img @click="changeLike($event,index1,index2)" src="../../image/icon/like.png" alt="" style="width: 20px;height:20px;margin-left: 30px;"><span v-if="it.commentLikeNum >= 1">{{it.commentLikeNum}}</span>
+                            <img @click="changeComment($event,it)" src="../../image/icon/comment.png" alt="" style="width: 20px;height: 20px;">
+                            <p>{{it.commentContent}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="position: fixed;bottom: 0;left: 0;">
+                <!--评论编辑框-->
+                <el-input id="textarea"
+                        type="textarea"
+                        :rows="3"
+                        style="width: 610px;"
+                        placeholder="请输入内容,键盘键入ctrl+enter(回车)发送消息"
+                        maxlength="100"
+                        show-word-limit
+                        clearable
+                        @keyup.ctrl.enter.native="sendComment"
+                        @keyup.delete.native="deleteComment"
+                        v-model="comment.commentContent">
+                    <el-button slot="append" >发表</el-button>
+                </el-input>
+            </div>
+        </el-drawer>
+    </div>
+</div>
+
+</body>
+<script src="../../editormd/jquery-3.6.1.js"></script>
+<script src="../../editormd/editormd.js"></script>
+<script src="../../editormd/lib/marked.min.js"></script>
+<script src="../../editormd/lib/prettify.min.js"></script>
+<script src="../../editormd/lib/raphael.min.js"></script>
+<script src="../../editormd/lib/underscore.min.js"></script>
+<script src="../../editormd/lib/sequence-diagram.min.js"></script>
+<script src="../../editormd/lib/flowchart.min.js"></script>
+<script src="../../editormd/lib/jquery.flowchart.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/element-ui/index.js"></script>
+<script src="../../js/vant.min.js"></script>
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../js/validate.js"></script>
+<script src="../../js/index.js"></script>
+<script src="../../api/viewPost.js"></script>
+
+
+<script>
+    let s1=false;
+    let s2=false;
+    let s3=false;
+    let s4=false;
+    $(function () {
+        var post = window.parent.getPost();
+        $.ajax({
+            url:"/collection/isCollection",
+            type:"POST",
+            contentType:"application/json",
+            data:JSON.stringify({
+                    "userId":window.localStorage.getItem("userId"),
+                    "postId":post.id,
+                }),
+            success:function(res){
+                if (res.data === true) {
+                    document.getElementById("f33").src = "../../image/icon/Favorite2.png";
+                    s3 = true;
+                }
+            },
+            error:function(res){
+
+            }
+        });
+        $("#title").text(post.postTitle);
+        document.getElementById("author").innerHTML = "作者：" + post.username;
+        document.getElementById("time").innerHTML = "时间：" + post.date;
+        $("#postContent").text(post.postContent);
+        document.getElementById("f1").innerHTML = post.likeNum;
+        document.getElementById("f3").innerHTML = post.collectionNum;
+        document.getElementById("f4").innerHTML = post.commentNum;
+        var testEditor = editormd.markdownToHTML("doc-content", {//注意：这里是上面DIV的id
+            htmlDecode: "style,script,iframe",
+            emoji: true,
+            taskList: true,
+            tocm: true,
+            tex: true, // 默认不解析
+            flowChart: true, // 默认不解析
+            sequenceDiagram: true, // 默认不解析
+            codeFold: true,
+        });
+    });
+    let post_=window.parent.getPost();
+    function f1(){//点赞
+        if(s1 === false){
+            document.getElementById("f11").src = "../../image/icon/like2.png";
+            post_.likeNum++;
+            document.getElementById("f1").innerHTML=post_.likeNum;
+            s1 = true;
+            //保存点赞信息
+            $.ajax({
+                url:"/posts/updateLikeNum",
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(post_),
+                success:function(res){
+
+                },
+                error:function(res){
+
+                }
+            })
+        }else{
+            document.getElementById("f11").src = "../../image/icon/like.png";
+            post_.likeNum--;
+            document.getElementById("f1").innerHTML=post_.likeNum;
+            s1 = false;
+            //保存点赞信息
+            $.ajax({
+                url:"/posts/updateLikeNum",
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(post_),
+                success:function(res){
+
+                },
+                error:function(res){
+
+                }
+            })
+        }
+    }
+    function f2(){//踩
+        if(s2 === false){
+            document.getElementById("f22").src = "../../image/icon/notLike1.png";
+            s2 = true;
+        }else{
+            document.getElementById("f22").src = "../../image/icon/notLike.png";
+            s2 = false;
+        }
+    }
+    function f3(){//收藏
+        if (s3 === false){
+            document.getElementById("f33").src = "../../image/icon/Favorite2.png";
+            post_.collectionNum++;
+            document.getElementById("f3").innerHTML=post_.collectionNum;
+            s3 = true;
+            //保存收藏信息
+            $.ajax({
+                url:"/collection/updateCollectionInfo",
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(post_),
+                success:function(res){
+
+                },
+                error:function(res){
+
+                }
+            })
+        }else{
+            document.getElementById("f33").src = "../../image/icon/Favorite1.png";
+            post_.collectionNum--;
+            document.getElementById("f3").innerHTML=post_.collectionNum;
+            s3 = false;
+            //取消收藏信息
+            $.ajax({
+                url:"/collection/updateCollectionInfo?type=1",
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(post_),
+                success:function(res){
+
+                },
+                error:function(res){
+
+                }
+            })
+        }
+    }
+    function f4(){//评论
+        window.showComment();
+    }
+    function _back(){
+        //返回上一级
+        window.parent.go_back();
+    }
+    var commentVue = new Vue({
+        el:"#commentApp",
+        data() {
+            return {
+                visible:false,
+                dialogVisible:false,
+                comment:{
+                    commentContent:"",
+                    commentLikeNum:0,
+                    postId:null,
+                    sendUserId:null,
+                    receiveUserId:null,
+                    status:null,
+                    time:null,
+                    rootId:null,
+                    username:"",
+                    toUsername:"",
+                    avatar:"",
+                },
+                commentList:[
+                    // {
+                    //     id:"1",
+                    //     postId:"2",
+                    //     toUsername:"袁合康",
+                    //     username:"刘家辉",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     sendUserId:"123456",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论",
+                    //     commentLikeNum:0,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },
+                    // {
+                    //     id:"2",
+                    //     postId:"2",
+                    //     username:"刘家辉",
+                    //     sendUserId:"123456",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论1",
+                    //     commentLikeNum:0,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },
+                    // {
+                    //     id:"3",
+                    //     postId:"2",
+                    //     username:"刘家辉",
+                    //     toUsername:"袁合康",
+                    //     sendUserId:"123456",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论2",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    //     commentList1:[
+                    //         {
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:0,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         },{
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:10,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         },{
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:10,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         },{
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:10,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         },{
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:10,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         },{
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:10,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         },{
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:10,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         },{
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:10,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         },{
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:0,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         },{
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:10,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         },{
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:10,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         },{
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:10,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         },{
+                    //             id:"3",
+                    //             postId:"2",
+                    //             username:"刘家辉",
+                    //             toUsername:"袁合康",
+                    //             sendUserId:"123456",
+                    //             avatar:"../../image/avatar/logo-IAEEP1.jpg",
+                    //             receiveUserId:"",
+                    //             commentContent:"这是测试回复2",
+                    //             commentLikeNum:10,
+                    //             status:1,
+                    //             time:"2022/10/22",
+                    //         }
+                    //     ],
+                    // },
+                    // {
+                    //     id:"4",
+                    //     postId:"2",
+                    //     username:"刘家辉",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     sendUserId:"123456",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论3",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },{
+                    //     id:"5",
+                    //     username:"刘家辉",
+                    //     postId:"2",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     sendUserId:"123456",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论4",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },{
+                    //     id:"6",
+                    //     postId:"2",
+                    //     username:"刘家辉",
+                    //     sendUserId:"123456",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论5",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },
+                    // {
+                    //     id:"1",
+                    //     postId:"2",
+                    //     toUsername:"袁合康",
+                    //     username:"刘家辉",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     sendUserId:"123456",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },
+                    // {
+                    //     id:"2",
+                    //     postId:"2",
+                    //     username:"刘家辉",
+                    //     sendUserId:"123456",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论1",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },
+                    // {
+                    //     id:"3",
+                    //     postId:"2",
+                    //     username:"刘家辉",
+                    //     sendUserId:"123456",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论2",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },
+                    // {
+                    //     id:"4",
+                    //     postId:"2",
+                    //     username:"刘家辉",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     sendUserId:"123456",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论3",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },{
+                    //     id:"5",
+                    //     username:"刘家辉",
+                    //     postId:"2",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     sendUserId:"123456",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论4",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },{
+                    //     id:"6",
+                    //     postId:"2",
+                    //     username:"刘家辉",
+                    //     sendUserId:"123456",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论5",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },
+                    // {
+                    //     id:"1",
+                    //     postId:"2",
+                    //     toUsername:"袁合康",
+                    //     username:"刘家辉",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     sendUserId:"123456",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },
+                    // {
+                    //     id:"2",
+                    //     postId:"2",
+                    //     username:"刘家辉",
+                    //     sendUserId:"123456",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论1",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },
+                    // {
+                    //     id:"3",
+                    //     postId:"2",
+                    //     username:"刘家辉",
+                    //     sendUserId:"123456",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论2",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },
+                    // {
+                    //     id:"4",
+                    //     postId:"2",
+                    //     username:"刘家辉",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     sendUserId:"123456",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论3",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },{
+                    //     id:"5",
+                    //     username:"刘家辉",
+                    //     postId:"2",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     sendUserId:"123456",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论4",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // },{
+                    //     id:"6",
+                    //     postId:"2",
+                    //     username:"刘家辉",
+                    //     sendUserId:"123456",
+                    //     avatar:"../../image/avatar/6.jpg",
+                    //     receiveUserId:"",
+                    //     commentContent:"这是测试评论5",
+                    //     commentLikeNum:10,
+                    //     status:0,
+                    //     time:"2022/10/22",
+                    // }
+                ],
+                userInfo: {
+                    userId: "123456",//window.localStorage.getItem("userId")
+                },
+                st1:false,
+            }
+        },
+        watch:{
+
+        },
+        create() {
+        },
+        mounted() {
+            window.showComment = this.showComment;
+        },
+        methods: {
+            async showComment(){
+                await getUserInfo__(window.localStorage.getItem("userId")).then((res)=>{
+                    this.userInfo =res.data;
+                });
+                //获取贴子下的评论
+                const post = window.parent.getPost();
+                await getCommentByPost(JSON.stringify(post)).then((res)=>{
+                    this.commentList = res.data;
+                });
+                this.visible = true;
+                //初始化列表
+                this.comment.postId = post.id;
+                this.comment.commentLikeNum = 0;
+                this.comment.status = 0;
+
+            },
+            deleteComment(){
+                //判断@ ...... ：是否被删除（即判断回复锁定是否已被删除）
+                let cnt1=0,cnt2=0;
+                let name;
+                for (let i=0 ;i<this.comment.commentContent.length;i++) {
+                    if(this.comment.commentContent[i] === ':' && cnt1 ===1){
+                        cnt2 = 1;
+                        break;
+                    }else if(this.comment.commentContent[i] !== ':' && cnt1 === 1){
+                        name+=this.comment.commentContent[i];
+                    }
+                    if(this.comment.commentContent[i] === '@') {
+                        cnt1=1;
+                    }
+                }
+                if(cnt2 === 0){
+                    //未找到回复锁定
+                    this.comment.status = 0;//状态置为评论
+                }
+                if (this.comment.toUsername !== name){
+                    this.comment.status = 0;//名称被修改，状态置为评论;
+                    // alert(1);
+                }
+            },
+            sendComment(){//发表评论、回复
+                this.comment.avatar = this.userInfo.avatar;
+                this.comment.username = this.userInfo.name;
+                sendCommentOrReply(JSON.stringify(this.comment)).then((res)=>{
+                    this.$message({
+                        message: "发送成功",
+                        center: true,
+                        showClose: true,
+                        type: "success",
+                    });
+                    //更新评论集合
+                    if (res.data.status === 0){
+                        this.commentList.push(res.data);
+                    }else{
+                        for (let i = 0; i < this.commentList.length; i++) {
+                            if (this.commentList[i].id === res.data.rootId){
+                                if (this.commentList[i].commentList1 == null){
+                                    this.commentList[i].commentList1 = [];
+                                    this.commentList[i].commentList1.push(res.data);
+                                }else {
+                                    this.commentList[i].commentList1.push(res.data);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    //复原
+                    let post = window.parent.getPost();
+                    this.comment.postId = post.id;
+                    this.comment.commentLikeNum = 0;
+                    this.comment.status = 0;
+                    this.comment.commentContent = "";
+                    // alert(this.comment.commentContent);
+                });
+            },
+            changeComment(e,comment){//回复锁定
+                // alert("已锁定");
+                this.comment.commentContent="@"+comment.username+":";
+                this.comment.postId = comment.postId;
+                this.comment.commentLikeNum = 0;
+                this.comment.receiveUserId = comment.sendUserId;
+                this.comment.status = 1;
+                if (comment.status === 1) {
+                    this.comment.rootId = comment.rootId;
+                }else {
+                    this.comment.rootId = comment.id;
+                }
+                this.comment.toUsername = comment.username;
+            },
+            changeLike(e,index1 ,index2){
+                if(this.st1 === false){
+                    e.target.src ="../../image/icon/like2.png";
+                    if(index2 === -1){
+                        this.commentList[index1].commentLikeNum +=1;
+                    }else{
+                        this.commentList[index1].commentList1[index2].commentLikeNum +=1;
+                    }
+                    this.st1 = true;
+                }else{
+                    e.target.src ="../../image/icon/like.png";
+                    if(index2 === -1){
+                        this.commentList[index1].commentLikeNum -=1;
+                    }else{
+                        this.commentList[index1].commentList1[index2].commentLikeNum -=1;
+                    }
+                    this.st1 = false;
+                }
+                if(index2  === -1){
+                    //评论点赞
+                    changeLike(JSON.stringify(this.commentList[index1])).then((res)=>{
+
+                    });
+                }else{
+                    //回复点赞
+                    changeLike(JSON.stringify(this.commentList[index1].commentList1[index2])).then((res)=>{
+
+                    });
+                }
+
+            }
+        },
+    });
+</script>
+</html>

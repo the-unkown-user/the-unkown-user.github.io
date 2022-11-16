@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6c2af03a-f3f6-4fef-9067-0edc87f779c3" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="HTML File" />
+        <option value="CSS File" />
+        <option value="JavaScript File" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="JRebelWorkspace">
+    <option name="jrebelEnabledAutocompile" value="true" />
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="C:\java\mvn_resp" />
+        <option name="userSettingsFile" value="C:\java\apache-maven-3.6.1-bin\apache-maven-3.6.1\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="2FWre4C2EKjj6vjwgOAik9lLwah" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="js.last.introduce.type" value="VAR" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../my_git_repository" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+  </component>
+  <component name="RebelAgentSelection">
+    <selection>jr</selection>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\IAEEP\src\main\resources\iaeep\styles\css" />
+      <recent name="D:\IAEEP\src\main\resources\iaeep\image" />
+      <recent name="D:\IAEEP\src\main\resources\iaeep\editormd" />
+      <recent name="D:\IAEEP\src\main\resources\iaeep\plugins" />
+      <recent name="D:\IAEEP\src\main\resources\iaeep\image\avatar" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.iaeep.common" />
+      <recent name="com.iaeep.filter" />
+      <recent name="" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\IAEEP\src\main\resources\iaeep\image\icon" />
+      <recent name="D:\IAEEP\src\main\resources\iaeep\editormd" />
+      <recent name="D:\IAEEP\src\main\resources\iaeep\page\user_management" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="IaeepApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="IAEEP" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.iaeep.IaeepApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.IaeepApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6c2af03a-f3f6-4fef-9067-0edc87f779c3" name="Default Changelist" comment="" />
+      <created>1664618772812</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1664618772812</updated>
+      <workItem from="1664618778221" duration="3615000" />
+      <workItem from="1664672325320" duration="6622000" />
+      <workItem from="1664720489646" duration="4439000" />
+      <workItem from="1665147128824" duration="5115000" />
+      <workItem from="1665187210963" duration="4053000" />
+      <workItem from="1665212459744" duration="1775000" />
+      <workItem from="1665389114997" duration="4247000" />
+      <workItem from="1665407302993" duration="6080000" />
+      <workItem from="1665475246596" duration="1820000" />
+      <workItem from="1665493323429" duration="25096000" />
+      <workItem from="1665582126908" duration="1033000" />
+      <workItem from="1665622335027" duration="13199000" />
+      <workItem from="1665813789307" duration="42143000" />
+      <workItem from="1665915632397" duration="1362000" />
+      <workItem from="1665973903358" duration="29713000" />
+      <workItem from="1666082880536" duration="4406000" />
+      <workItem from="1666147555645" duration="19687000" />
+      <workItem from="1666186044664" duration="1030000" />
+      <workItem from="1666188385076" duration="1753000" />
+      <workItem from="1666192908725" duration="1651000" />
+      <workItem from="1666224036333" duration="10839000" />
+      <workItem from="1666309968674" duration="6283000" />
+      <workItem from="1666354283330" duration="33173000" />
+      <workItem from="1666484708051" duration="19703000" />
+      <workItem from="1666576463327" duration="26881000" />
+      <workItem from="1666684709264" duration="8519000" />
+      <workItem from="1666742023448" duration="5654000" />
+      <workItem from="1666751611780" duration="16520000" />
+      <workItem from="1666830355008" duration="5248000" />
+      <workItem from="1666860144797" duration="5873000" />
+      <workItem from="1667003154693" duration="3133000" />
+      <workItem from="1667006541102" duration="7328000" />
+      <workItem from="1667020561111" duration="7946000" />
+      <workItem from="1667037019797" duration="8527000" />
+      <workItem from="1667051126954" duration="151000" />
+      <workItem from="1667051311684" duration="1516000" />
+      <workItem from="1667053433929" duration="2532000" />
+      <workItem from="1667057128279" duration="249000" />
+      <workItem from="1667057409427" duration="725000" />
+      <workItem from="1667059213295" duration="1724000" />
+      <workItem from="1667087004000" duration="13044000" />
+      <workItem from="1667103027097" duration="28998000" />
+      <workItem from="1667137812300" duration="7488000" />
+      <workItem from="1667180605119" duration="9973000" />
+      <workItem from="1667267327834" duration="13788000" />
+      <workItem from="1667304420510" duration="8952000" />
+      <workItem from="1667358252880" duration="1998000" />
+      <workItem from="1667365020519" duration="151000" />
+      <workItem from="1667365197725" duration="8868000" />
+      <workItem from="1667569961343" duration="943000" />
+      <workItem from="1667619919931" duration="42000" />
+      <workItem from="1667982062987" duration="4113000" />
+      <workItem from="1668092562421" duration="34000" />
+      <workItem from="1668308764274" duration="4429000" />
+      <workItem from="1668565591449" duration="12658000" />
+      <workItem from="1668610883933" duration="1047000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="361" y="66" key="#Auto_Import" timestamp="1667358868206">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="361" y="66" key="#Auto_Import/0.0.1536.816@0.0.1536.816" timestamp="1667358868206" />
+    <state x="223" y="63" width="1164" height="690" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1666008995666">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="223" y="63" width="1164" height="690" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.816@0.0.1536.816" timestamp="1666008995666" />
+    <state x="300" y="210" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1666192712840">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="300" y="210" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.816@0.0.1536.816" timestamp="1666192712840" />
+    <state x="511" y="243" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog" timestamp="1667051202339">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="511" y="243" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog/0.0.1536.816@0.0.1536.816" timestamp="1667051202339" />
+    <state x="574" y="117" key="#com.intellij.ide.util.MemberChooser" timestamp="1667137260321">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="574" y="117" key="#com.intellij.ide.util.MemberChooser/0.0.1536.816@0.0.1536.816" timestamp="1667137260321" />
+    <state x="523" y="268" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1666193475154">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="523" y="268" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1536.816@0.0.1536.816" timestamp="1666193475154" />
+    <state x="549" y="163" key="FileChooserDialogImpl" timestamp="1668611257701">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="549" y="163" key="FileChooserDialogImpl/0.0.1536.816@0.0.1536.816" timestamp="1668611257701" />
+    <state x="632" y="301" width="272" height="274" key="Github.ShareDialog" timestamp="1668611942518">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="632" y="301" width="272" height="274" key="Github.ShareDialog/0.0.1536.816@0.0.1536.816" timestamp="1668611942518" />
+    <state width="1493" height="222" key="GridCell.Tab.0.bottom" timestamp="1668603651225">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state width="1493" height="222" key="GridCell.Tab.0.bottom/0.0.1536.816@0.0.1536.816" timestamp="1668603651225" />
+    <state width="1493" height="222" key="GridCell.Tab.0.center" timestamp="1668603651225">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state width="1493" height="222" key="GridCell.Tab.0.center/0.0.1536.816@0.0.1536.816" timestamp="1668603651225" />
+    <state width="1493" height="222" key="GridCell.Tab.0.left" timestamp="1668603651225">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state width="1493" height="222" key="GridCell.Tab.0.left/0.0.1536.816@0.0.1536.816" timestamp="1668603651225" />
+    <state width="1493" height="222" key="GridCell.Tab.0.right" timestamp="1668603651225">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state width="1493" height="222" key="GridCell.Tab.0.right/0.0.1536.816@0.0.1536.816" timestamp="1668603651225" />
+    <state width="1493" height="222" key="GridCell.Tab.1.bottom" timestamp="1668603651225">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state width="1493" height="222" key="GridCell.Tab.1.bottom/0.0.1536.816@0.0.1536.816" timestamp="1668603651225" />
+    <state width="1493" height="222" key="GridCell.Tab.1.center" timestamp="1668603651225">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state width="1493" height="222" key="GridCell.Tab.1.center/0.0.1536.816@0.0.1536.816" timestamp="1668603651225" />
+    <state width="1493" height="222" key="GridCell.Tab.1.left" timestamp="1668603651225">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state width="1493" height="222" key="GridCell.Tab.1.left/0.0.1536.816@0.0.1536.816" timestamp="1668603651225" />
+    <state width="1493" height="222" key="GridCell.Tab.1.right" timestamp="1668603651225">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state width="1493" height="222" key="GridCell.Tab.1.right/0.0.1536.816@0.0.1536.816" timestamp="1668603651225" />
+    <state x="270" y="50" key="SettingsEditor" timestamp="1668611276459">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="270" y="50" key="SettingsEditor/0.0.1536.816@0.0.1536.816" timestamp="1668611276459" />
+    <state x="449" y="232" key="com.intellij.ide.util.TipDialog" timestamp="1668610883115">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="449" y="232" key="com.intellij.ide.util.TipDialog/0.0.1536.816@0.0.1536.816" timestamp="1668610883115" />
+    <state x="178" y="103" key="new project wizard" timestamp="1664724174466">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="178" y="103" key="new project wizard/0.0.1536.816@0.0.1536.816" timestamp="1664724174466" />
+    <state x="425" y="185" key="run.anything.popup" timestamp="1666498327364">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="425" y="185" key="run.anything.popup/0.0.1536.816@0.0.1536.816" timestamp="1666498327364" />
+    <state x="787" y="137" width="672" height="678" key="search.everywhere.popup" timestamp="1667381762282">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="787" y="137" width="672" height="678" key="search.everywhere.popup/0.0.1536.816@0.0.1536.816" timestamp="1667381762282" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/resources/iaeep/page/index.html</url>
+          <line>1404</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/resources/iaeep/page/index.html</url>
+          <line>1025</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

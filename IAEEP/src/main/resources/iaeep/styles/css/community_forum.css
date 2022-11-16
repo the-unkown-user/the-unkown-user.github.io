@@ -1,0 +1,79 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    margin: 0;
+}
+
+.forumAppClass {
+    position: relative;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background-color: gainsboro;
+}
+
+.forumAppClass .left {
+    position: absolute;
+    width: 70%;
+    height: 95%;
+    margin-left: 20px ;
+    margin-bottom: 20px;
+    margin-top:20px;
+}
+
+.forumAppClass .left .new {
+    width: 100%;
+    height: 49%;
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+.forumAppClass .left .hot {
+    width: 100%;
+    height: 46%;
+    background-color: white;
+}
+
+.forumAppClass .right {
+    position: relative;
+    width: 26%;
+    height: 95%;
+    margin: 20px 20px 20px 20px;
+    float: right;
+}
+
+.forumAppClass .right .recommend {
+    width: 100%;
+    height: 65%;
+    background-color: white;
+}
+
+.forumAppClass .right .follow {
+    width: 100%;
+    height: 30%;
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+.title {
+    width: 100%;
+    height: 25px;
+
+}
+
+h3 {
+    position:absolute;
+    height: 25px;
+    width: 100px;
+    margin-top:10px;
+    margin-bottom:2px;
+    margin-left:10px;
+}
+
+.main {
+    width: 100%;
+    height: 300px;
+}

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>共创平台</title>
+    <link rel="stylesheet" href="../../plugins/element-ui/index.css"/>
+    <link rel="stylesheet" href="../../styles/css/vant.min.css"/>
+    <link rel="stylesheet" href="../../styles/css/co_creation_platform.css"/>
+</head>
+
+<body>
+<div id="platformApp" class="platformAppClass" v-if="isReloadData">
+    <div class="left" v-if="show == 0">
+        <div class="select">
+            <div class="title">
+                <h3 style="margin-left: 475px;">分类</h3>
+            </div>
+            <div class="clear" style="width: 100%;height: 50px;">
+                <el-button size="small" @click="_clear" style="margin-left: 800px;">清空筛选</el-button>
+            </div>
+            <el-table
+                    :data="classification"
+                    :show-header="False"
+                    size="mini" height="108"
+                    style="width: 900px; margin-left: 50px;">
+                <el-table-column width="150">
+                    <template slot-scope="scope">
+                        <span style="cursor: pointer" @click="changeProject($event,scope.row.name1)"
+                              onmousemove="changeColorRed(this)"
+                              onmouseout="cancelColor(this)">{{scope.row.name1}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="150">
+                    <template slot-scope="scope">
+                        <span style="cursor: pointer" @click="changeProject($event,scope.row.name2)"
+                              onmousemove="changeColorRed(this)"
+                              onmouseout="cancelColor(this)">{{scope.row.name2}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="150">
+                    <template slot-scope="scope">
+                        <span style="cursor: pointer" @click="changeProject($event,scope.row.name3)"
+                              onmousemove="changeColorRed(this)"
+                              onmouseout="cancelColor(this)">{{scope.row.name3}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="150">
+                    <template slot-scope="scope">
+                        <span style="cursor: pointer" @click="changeProject($event,scope.row.name4)"
+                              onmousemove="changeColorRed(this)"
+                              onmouseout="cancelColor(this)">{{scope.row.name4}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="150">
+                    <template slot-scope="scope">
+                        <span style="cursor: pointer" @click="changeProject($event,scope.row.name5)"
+                              onmousemove="changeColorRed(this)"
+                              onmouseout="cancelColor(this)">{{scope.row.name5}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="150">
+                    <template slot-scope="scope">
+                        <span style="cursor: pointer" @click="changeProject($event,scope.row.name6)"
+                              onmousemove="changeColorRed(this)"
+                              onmouseout="cancelColor(this)">{{scope.row.name6}}</span>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+        </div>
+
+        <div class="result">
+            <el-table
+                    :data="resultProjectList.filter(data=> !search || data.projectLabel == search)"
+                    height="350"
+                    @row-click="viewProjectDetail"
+                    style="width: 1000px;margin-top: 0;cursor: pointer;margin-left: 10px;">
+                <el-table-column align="center" prop="projectName" width="200" label="项目名称"></el-table-column>
+                <el-table-column align="center" prop="projectIntroduce"  width="200" label="项目介绍">
+                    <template slot-scope="scope">
+                        <p class="descStyle">{{ scope.row.projectIntroduce }}</p>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" prop="chargeUsername" width="200" label="项目负责人"></el-table-column>
+                <el-table-column align="center" prop="projectType" width="200" label="项目类型"></el-table-column>
+                <el-table-column align="center" prop="projectLabel" width="200" label="项目标签"></el-table-column>
+            </el-table>
+        </div>
+    </div>
+
+    <!--展示项目详情-->
+    <div class="left" v-else style="background-color: white;">
+        <el-form style="margin-left: 100px;margin-top: 50px;" ref="form" :model="projectInfo" label-width="100px" label-position="left">
+            <el-form-item label="项目名称:">
+                {{projectInfo.projectName}}
+            </el-form-item>
+            <el-form-item label="项目负责人:">
+                {{projectInfo.chargeUsername}}
+            </el-form-item>
+            <el-form-item label="负责人手机:">
+                {{projectInfo.phone}}
+            </el-form-item>
+            <el-form-item label="负责人邮箱:">
+                {{projectInfo.email}}
+            </el-form-item>
+            <el-form-item label="项目类型:">
+                {{projectInfo.projectType}}
+            </el-form-item>
+            <el-form-item label="项目标签:">
+                {{projectInfo.projectLabel}}
+            </el-form-item>
+            <el-form-item label="项目简介:">
+                <el-input type="textarea" rows="4" style="width: 360px;" v-model="projectInfo.projectIntroduce" disabled></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button @click="_go_back">返回</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+
+
+    <div class="right">
+        <div class="userInfo">
+            <!--用户信息-->
+            <div class="title">
+                <el-avatar :size="45" :src="userInfo.avatar" style="margin-left: 100px;"></el-avatar>
+                <h3 style="position: relative; float: right; margin-right: 120px;">{{userInfo.name}}</h3>
+            </div>
+            <el-divider></el-divider>
+            <div class="user_statistics">
+                <el-button size="mini" style="position: absolute; margin-right: 45%; margin-left: 35%; width: 120px;"
+                           @click="createProject">创建项目
+                </el-button>
+            </div>
+        </div>
+
+        <div class="recommend">
+            <!--推荐帖子-->
+            <div class="title">
+                <h3>最新项目</h3>
+            </div>
+            <el-divider></el-divider>
+
+            <div class="main">
+                <el-table
+                        :data="lastProjectList"
+                        height="350"
+                        @row-click="viewProjectDetail"
+                        style="width: 1000px;margin-top: 0;cursor: pointer;margin-left: 10px;">
+                    <el-table-column align="center" prop="projectName" width="150" label="项目名称" show-overflow-tooltip></el-table-column>
+                    <el-table-column align="center" prop="chargeUsername" width="100" label="项目负责人" show-overflow-tooltip></el-table-column>
+                    <el-table-column align="center" prop="projectLabel" width="100" label="项目标签" show-overflow-tooltip></el-table-column>
+                </el-table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+<script src="../../plugins/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="../../plugins/element-ui/index.js"></script>
+<!-- 引入axios -->
+<script src="../../plugins/axios/axios.min.js"></script>
+<script src="../../js/vant.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../js/validate.js"></script>
+<script src="../../js/index.js"></script>
+<script src="../../api/co_creation_platform.js"></script>
+
+<script>
+    new Vue({
+        el: '#platformApp',
+        data() {
+            return {
+                element: null,
+                userInfo: {
+                    name: "刘家辉",
+                    userId: "123456",
+                    phone: "18982712465",
+                    email: "2027254647@qq.com",
+                    age: "20",
+                    sex: "男",
+                    graduateSchool: "南阳师范学院",
+                    avatar: "../../image/avatar/logo-IAEEP1.jpg",
+                },
+                input:"",
+                False: false,
+                True: true,
+                show: 0,
+                search: "",
+                classification: [
+                    {
+                        id: 1, name1: "农林牧渔业", name2: "建筑", name3: "信息技术", name4: "金融",
+                        name5: "交通、仓储、物流", name6: "房地产"
+                    },
+                    {
+                        id: 1, name1: "采矿业", name2: "水电、热力、燃气", name3: "水利、环境、公共设施",
+                        name4: "居民服务、其他服务业", name5: "科学技术", name6: "租赁、商务服务"
+                    },
+                    {
+                        id: 1, name1: "制造业", name2: "批发、零售", name3: "住宿、餐饮", name4: "教育",
+                        name5: "文化、体育、娱乐", name6: "医疗和社会工作"
+                    },
+                ],
+                lastProjectList: [
+                    // {
+                    //     id: 1,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 2,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 3,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 4,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 5,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 6,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 7,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 8,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 9,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 10,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 11,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 12,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 13,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "科技,计算机,编程",
+                    //     projectName: "省钱电商平台",
+                    // },
+                ],
+                resultProjectList: [
+                    // {
+                    //     id: 1,
+                    //     chargeUserId: 123,
+                    //     chargeUsername: "刘家辉",
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1gslighegmdkhgioejksjagjeiogjsahgoikdsalngjeowhgksdjhgodsfiohdgoemghijsohgiojewigfjsoogjeihsljgoiehsjgoeh",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "教育",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 2,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     chargeUsername: "刘家辉",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "教育",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 3,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     chargeUsername: "刘家辉",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "教育",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 4,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     chargeUsername: "刘家辉",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "教育",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 5,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     chargeUsername: "刘家辉",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "信息技术",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 6,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     chargeUsername: "刘家辉",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "信息技术",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 7,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     chargeUsername: "刘家辉",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "信息技术",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 8,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     chargeUsername: "刘家辉",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "信息技术",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 9,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     chargeUsername: "刘家辉",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "金融",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 10,
+                    //     chargeUserId: 123,
+                    //     chargeUsername: "刘家辉",
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "金融",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 11,
+                    //     chargeUserId: 123,
+                    //     chargeUsername: "刘家辉",
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "金融",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 12,
+                    //     chargeUserId: 123,
+                    //     phone: "189515451545",
+                    //     chargeUsername: "刘家辉",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "金融",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 13,
+                    //     chargeUserId: 123,
+                    //     chargeUsername: "刘家辉",
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "金融",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 14,
+                    //     chargeUserId: 123,
+                    //     chargeUsername: "刘家辉",
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "文化、体育、娱乐",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 15,
+                    //     chargeUserId: 123,
+                    //     chargeUsername: "刘家辉",
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "文化、体育、娱乐",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 16,
+                    //     chargeUserId: 123,
+                    //     chargeUsername: "刘家辉",
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "文化、体育、娱乐",
+                    //     projectName: "省钱电商平台",
+                    // },
+                    // {
+                    //     id: 17,
+                    //     chargeUserId: 123,
+                    //     chargeUsername: "刘家辉",
+                    //     phone: "189515451545",
+                    //     email: "4564564895@qq.com",
+                    //     projectIntroduce: "kshgieonlsiog651456g132ds1g",
+                    //     projectPersonNum: 5,
+                    //     projectStatus: "发布",
+                    //     projectType: "个人",
+                    //     projectLabel: "文化、体育、娱乐",
+                    //     projectName: "省钱电商平台",
+                    // },
+                ],
+                projectInfo: {
+                    id: null,
+                    chargeUserId: null,
+                    chargeUsername: "",
+                    phone: "",
+                    email: "",
+                    projectIntroduce: "",
+                    projectPersonNum: null,
+                    projectStatus: "",
+                    projectType: "",
+                    projectLabel: "",
+                    projectName: "",
+                },
+                isReloadData:true,
+            }
+        },
+        computed: {//计算属性
+
+        },
+        watch: {//监听数据
+
+        },
+        created() {//钩子函数,在html渲染之前执行
+
+        },
+        mounted() {//钩子函数,在html渲染之后执行
+            this.init__();
+        },
+        methods: {
+            init__(){
+                //初始化用户信息
+                getUserInfo_(window.localStorage.getItem("userId")).then((res)=>{
+                    this.userInfo = res.data;
+                    this.userInfo.avatar = "../"+this.userInfo.avatar;
+                });
+                //初始化最新项目
+                getLastProjectList().then((res)=>{
+                    this.lastProjectList = res.data;
+                });
+
+                let search = window.parent.getSearch();
+                if (search.monitor === true && search.select_ === "项目" && search.input !== ""){
+                    //加载搜索结果
+                    this.resultProjectList = search.searchProjectList;
+                    window.parent.clear_monitor();
+                }else{
+                    //加载全部项目
+                    getAllProject().then((res)=>{
+                       this.resultProjectList = res.data;
+                    });
+                }
+            },
+            createProject() {
+                window.parent.go_co_creation_center1();
+            },
+            changeProject(e, name) {
+                if (this.element == null) {//首次添加筛选
+                    e.target.style.backgroundColor = "red";
+                    this.element = e;
+                } else {//切换筛选条件
+                    this.element.target.style.backgroundColor = "white";
+                    e.target.style.backgroundColor = "red";
+                    this.element = e;
+                }
+                this.search = name;
+            },
+            _clear() {
+                if (this.element == null) {
+                    return;
+                }
+                this.element.target.style.backgroundColor = "white";
+                this.element = null;
+                this.search = "";
+            },
+            viewProjectDetail() {
+                this.show = 1;
+            },
+            _go_back() {
+                this.show = 0;
+            }
+        }
+    })
+</script>
+<script>
+    function changeColorRed(t) {
+        t.style.color = "red";
+    }
+
+    function cancelColor(t) {
+        t.style.color = "black";
+    }
+</script>
+</html>
